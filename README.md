@@ -13,10 +13,10 @@ Then start the bot using this command
 CLIENT_ID=xxx.yyy CLIENT_SECRET=abc PORT=8765 npm start
 ```
 
-# Conversational Details
-Following are the commands for the current version of the bot v1.0
+# Behavioral Details
+Following are the commands for the current version of the bot v1.0. The BOT operates by creating a new private channel, inviting the user and the expert at the scheduled time to that channel, setting topic for the channel and joining that channel. It then monitors the following commands in the private channel.
 
-### Channel Monitored Combinations
+### Channel Commands
 ```javascript
    @bot_name start_chat
 ```
@@ -33,7 +33,8 @@ Following are the commands for the current version of the bot v1.0
   - If no end command, ends after half hour time slot by default
   - Charges a transaction fee of 10% on payment
 
-### DM(Direct Message) Combinations
+### DM(Direct Message) Questions and Answers
+These are word combinations that trigger the bot's response system.
 
 ```javascript
   expert list
