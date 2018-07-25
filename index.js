@@ -82,11 +82,15 @@ controller.on('rtm_close', function (bot) {
 // BEGIN EDITING HERE!
 
 controller.on('bot_channel_join', function (bot, message) {
-    bot.reply(message, "I'm here!")
+    bot.reply(message, "I'm here!");
 });
 
 controller.hears('hello', 'direct_message', function (bot, message) {
-    bot.reply(message, 'Hello!');
+  bot.api.users.info({user: message.user}, (error, response) => {
+      const {name, real_name, profile} = response.user;
+      console.log(name, real_name, profile);
+      bot.reply(message, `Hello ${real_name} ${profile.email}`);
+  });
 });
 
 
