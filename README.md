@@ -1,12 +1,24 @@
-# AskAnExpert slack bot
+# AskAnExpert Slack Bot
 - Slack bot for AskAnExpert Project (Part of Core Platform)
 - Enables real time chat with industry leading experts empowered by Slack.
 - This bot involves wallet address queries, token transactions and user creation
 
-# Commands
+# Running Instructions
+Start localtunnel using the following commands
+```bash
+lt --port 8765 --subdomain headmaster-bot
+```
+
+
+Then start the bot using this command
+```bash
+CLIENT_ID=xxx.yyy CLIENT_SECRET=abc PORT=8765 npm start
+```
+
+# Conversational Details
 Following are the commands for the current version of the bot v1.0
 
-## Channel Monitored
+## Channel Monitored Combinations
 ```javascript
    @bot_name start_chat
 ```
@@ -23,7 +35,7 @@ Following are the commands for the current version of the bot v1.0
   - If no end command, ends after half hour time slot by default
   - Charges a transaction fee of 10% on payment
 
-## DM(Direct Message) commands
+## DM(Direct Message) Combinations
 
 ```javascript
   expert list
@@ -80,6 +92,7 @@ Following are the commands for the current version of the bot v1.0
 - <> indicates regex
 - @ indicates specific user
 - other space seperated words indicate all inclusive combinations
+- If following tutorial, install the app on workspace only through htttps://<app-name>.localtunnel.me/login and not through slack interface
 
 # Pending Tasks
 - [ ] UI for Wallet Dashboard on Web
