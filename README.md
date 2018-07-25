@@ -1,5 +1,5 @@
 # AskAnExpert Slack Bot
-This is a Slack bot for AskAnExpert Project (Part of Core Platform) It enables real time chat with industry leading experts empowered by Slack. This bot involves wallet address queries, token transactions and user creation and uses the [BotKit](https://github.com/howdyai/botkit) framework. If following [Easy Peasy Tutorial](https://api.slack.com/tutorials/easy-peasy-bots) tutorial, make sure you read the Tutorial section of Notes 
+This is a Slack bot for AskAnExpert Project (Part of Core Platform) It enables real time chat with industry leading experts empowered by Slack. This bot involves wallet address queries, token transactions and user creation and uses the [BotKit](https://github.com/howdyai/botkit) framework. If following [Easy Peasy Tutorial](https://api.slack.com/tutorials/easy-peasy-bots) tutorial, make sure you read the Tutorial section of Notes
 
 # Running Instructions
 Start localtunnel using the following commands
@@ -94,7 +94,8 @@ Following are the commands for the current version of the bot v1.0
 
 ### Tutorials
 - Install the app on workspace only through htttps://<app-name>.localtunnel.me/login and not through slack interface
-- Setup Oauth Redirect URI in OAuth and Permissions Section of the Slack API Web interface
+- Setup Oauth Redirect URI in OAuth and Permissions Section of the Slack API Web Interface
+- In case the URL for localtunnel changes, change it in OAuth and Permissions in Slack API Web Interface
 
 # Pending Tasks
 - [ ] UI for Wallet Dashboard on Web
