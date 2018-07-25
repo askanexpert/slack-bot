@@ -16,7 +16,7 @@ CLIENT_ID=xxx.yyy CLIENT_SECRET=abc PORT=8765 npm start
 # Conversational Details
 Following are the commands for the current version of the bot v1.0
 
-## Channel Monitored Combinations
+### Channel Monitored Combinations
 ```javascript
    @bot_name start_chat
 ```
@@ -33,7 +33,7 @@ Following are the commands for the current version of the bot v1.0
   - If no end command, ends after half hour time slot by default
   - Charges a transaction fee of 10% on payment
 
-## DM(Direct Message) Combinations
+### DM(Direct Message) Combinations
 
 ```javascript
   expert list
