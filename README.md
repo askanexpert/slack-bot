@@ -1,60 +1,96 @@
-# easy-peasy-bot
+# AskAnExpert slack bot
+- Slack bot for AskAnExpert Project (Part of Core Platform)
+- Enables real time chat with industry leading experts empowered by Slack.
+- This bot involves wallet address queries, token transactions and user creation
 
-## The story of a (Slack)bot
+# Commands
+Following are the commands for the current version of the bot v1.0
 
-A (not so) long time ago, a team called Tiny Speck built an app to communicate with each other as they worked.
-In their daily work, they found that there were some mindless tasks they had to do over and over. These things pulled them out of important conversations, which slowed them down.
+## Channel Monitored
+```javascript
+   @bot_name start_chat
+```
+  - Starts the billing period for chat
+  - This can be done by user or expert
+  - First 5 minutes free as scheduling fee paid
 
-So, they built a special user in their messaging app: not a human user, but a digital user. The digital user took on some of their mindless tasks and integrated the other apps they used into their conversations.
+```javascript
+  @bot_name end_chat
+```
+  - Ends the billing period for chat
+  - This can be done by expert or user
+  - Pays and cuts money from user account (token transfer: user to user, with cut)
+  - If no end command, ends after half hour time slot by default
+  - Charges a transaction fee of 10% on payment
 
-Eventually their app was named Slack and their digital user, Slackbot.
-And lo, you can build a Slack Bot, too! With our API and this nifty repository, a bot for your team can be all yours.
+## DM(Direct Message) commands
 
-# Using Botkit for Custom Bots
-1. Fork this project.
-2. Open up your favorite terminal app, and clone your new repository to your local computer.
-3. This is a Node.js project, so you’ll need to install the various dependencies by running:
-    npm install
-4. Edit `package.json` to give your bot a name and update the GitHub URLs to reflect the location of your fork in GitHub.
-5. Go to https://my.slack.com/apps/new/A0F7YS25R-bots and pick a name for your new bot.
-6. Once you’ve clicked “Add integration,” you’ll be taken to a page where you can further customize your bot. Of importance is the bot token—take note of it now.
-7. Once you have the token, you can run your bot easily:
+```javascript
+  expert list
+```
+- Shows the list of experts, available on the platform
+```javascript
+  expert profile @username
+```
+- Shows the detailed profile of expert with username
 
-    ```bash
-    TOKEN=xoxb-your-token-here npm start
-    ```
+```javascript
+  expert availability @username
+```
+- Shows the time slots for availability of expert with username
 
-    Your bot will now attempt to log into your team, and you should be able talk to it. Try telling your new bot “hello”. It should say “Hello!” back!
+```javascript
+  expert schedule at <time_slot> @username
+```
+- Schedules chat for given time_slot with expert
+- Fees for first 5 minutes of billing cycle are cut as deposit
+- Asks for confirmation
 
-8. Botkit is structured around event listeners. The most important is the “hear” listener, which kicks off an action when your bot hears something. `index.js` contains the core logic, and has this event listener:
+```javascript
+  show balance
+```
+- Shows the wallet balance
 
-    ```javascript
-    controller.hears('hello','direct_message', function(bot,message) {
-        bot.reply(message, 'Hello!');
-    });
-    ```
+```javascript
+  show activity, show payment history
+```
+- Shows the ledger activity of payments related to user
 
-    This event handler is triggered when the bot receives a direct message from a user that contains the word “hello.”
+```javascript
+  purchase <tokens>
+```
+- Purchases specific number of tokens (token transfer: company to user)
+- Deducts money from user on web dashboard (credit card, right now mock)
+- Asks for confirmation
 
-    The bot responds in the direct message with, “Hello!”
+```javascript
+  redeem <tokens>
+```
+- Redeems tokens from user wallet (token transfer: user to company)
+- Deposits money into user account on web dashboard (credit card, right now mock)
+- Asks for confirmation
 
-9. You can listen to any kind of message or you can configure your bot to only listen to direct messages or specific @-mentions of your bot. It’s up to you! To start let’s re-write the event listener to be more  flexible about the greetings it is listening for:
-    ```javascript
-    controller.hears(['hello', 'hi', 'greetings'], ['direct_mention', 'mention', 'direct_message'], function(bot,message) {
-         bot.reply(message, 'Hello!');
-     });
-    ```
+**Optional**
+```javascript
+  view wallet
+```
+- Gives link to user to view wallet dashboard.
 
-    Now our bot will respond any time it sees “hello,” “hi,” or “greetings” in either a DM or a message that @-mentions the bot. (Don’t forget to restart your bot after each edit!)
+### Notes
+- <> indicates regex
+- @ indicates specific user
+- other space seperated words indicate all inclusive combinations
 
-## Hurrah! Welcome to Level 2
+# Pending Tasks
+- [ ] UI for Wallet Dashboard on Web
+- [ ] Modularization of BOT code as a service
 
-You’ve built your first bot in Slack, and it’s not just a Hello World bot—it’s a Hi World and Greetings World bot too!
+# Future Tasks
+- [ ] Mobile Wallet App
+- [ ] Expert Listing according to topic
+- [ ] Feedback for expert command introduction
 
-At this point you will probably want to start doing more sophisticated things, like making requests to external services, so your bot can respond with timely and useful information (depending on what your bot does, of course). There’s a lot more to Botkit than this! You can learn more about Botkit’s awesome features by simply perusing the [Botkit documentation](http://howdy.ai/botkit/docs/).
-
-Once you’ve got your bot developed to your liking, it is ready to be deployed to your own hosting framework. No other configuration is necessary, except storing the token and desired port in environment variables.
-
-# Using Botkit for Bot Apps
-
-You can find full instructions for building a bot app with this repository at https://medium.com/slack-developer-blog/easy-peasy-bots-getting-started-96b65e6049bf#.4ay2fjf32
+# Author
+- Tejas Nikumbh
+  - Email: tejnikumbh@gmail.com
+  - Skype: tjnikumbh
