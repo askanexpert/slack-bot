@@ -20,21 +20,14 @@ lt --port 8765 --subdomain headmaster-bot
 ```
 
 
-**Step 2** 
+**Step(s) 2** 
 
 
-Take the URL and paste <URL>/oauth in OAuth and Permissions in Slack API Dashboard
-
-
-
+- Take the URL and paste <URL>/oauth in OAuth and Permissions in Slack API Dashboard
+- Install the App inside your workspace by navigating to <URL>/login and authorizing
+   
+   
 **Step 3** 
-
-
-Install the App inside your workspace
-Do this by navigating to <URL>/login and authorizing
-   
-   
-**Step 4** 
 
 
 Start bot in root directory (with client id and secret from slack)
@@ -42,7 +35,7 @@ Start bot in root directory (with client id and secret from slack)
 CLIENT_ID=xxx.yyy CLIENT_SECRET=abc PORT=8765 npm run dev-watch
 ```
 
-**Step 5**
+**Step 4**
 
 
 Check the bot behavior in slack. DONE!
