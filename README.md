@@ -2,16 +2,51 @@
 This is a Slack bot for AskAnExpert Project (Part of Core Platform) It enables real time chat with industry leading experts empowered by Slack. This bot involves wallet address queries, token transactions and user creation and uses the [BotKit](https://github.com/howdyai/botkit) framework. If following [Easy Peasy Tutorial](https://api.slack.com/tutorials/easy-peasy-bots) tutorial, make sure you read the Tutorial section of Notes
 
 # Running Instructions
-Start localtunnel using the following commands
+**Step 0** 
+
+
+Run to install node packages and localtunnel
+```bash
+npm install --save
+npm install -g localtunnel
+```
+
+**Step 1** 
+
+
+Start localtunnel in root directory
 ```bash
 lt --port 8765 --subdomain headmaster-bot
 ```
 
 
-Then start the bot using this command
+**Step 2** 
+
+
+Take the URL and paste <URL>/oauth in OAuth and Permissions in Slack API Dashboard
+
+
+
+**Step 3** 
+
+
+Install the App inside your workspace
+Do this by navigating to <URL>/login and authorizing
+   
+   
+**Step 3** 
+
+
+Start bot in root directory (with client id and secret from slack)
 ```bash
-CLIENT_ID=xxx.yyy CLIENT_SECRET=abc PORT=8765 npm start
+CLIENT_ID=xxx.yyy CLIENT_SECRET=abc PORT=8765 npm run dev-watch
 ```
+
+**Step 4**
+
+
+Check the bot behavior in slack. DONE!
+
 
 # Behavioral Details
 Following are the commands for the current version of the bot v1.0. The BOT operates by creating a new private channel, inviting the user and the expert at the scheduled time to that channel, setting topic for the channel and joining that channel. It then monitors the following commands in the private channel.
