@@ -34,7 +34,7 @@ Install the App inside your workspace
 Do this by navigating to <URL>/login and authorizing
    
    
-**Step 3** 
+**Step 4** 
 
 
 Start bot in root directory (with client id and secret from slack)
@@ -42,7 +42,7 @@ Start bot in root directory (with client id and secret from slack)
 CLIENT_ID=xxx.yyy CLIENT_SECRET=abc PORT=8765 npm run dev-watch
 ```
 
-**Step 4**
+**Step 5**
 
 
 Check the bot behavior in slack. DONE!
