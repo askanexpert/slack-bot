@@ -94,7 +94,7 @@ controller.hears(['hello','hi'], 'direct_message', function (bot, message) {
   });
 });
 
-controller.hears('help view', 'direct_message', function (bot, message) {
+controller.hears(['views','view', 'help view'], 'direct_message', function (bot, message) {
   bot.reply(message, {
     "attachments": [
       {
@@ -144,7 +144,7 @@ controller.hears('help view', 'direct_message', function (bot, message) {
   });
 });
 
-controller.hears('help transactions', 'direct_message', function (bot, message) {
+controller.hears(['transaction','transactions','help transactions'], 'direct_message', function (bot, message) {
   bot.reply(message, {
       "attachments": [
         {
@@ -194,6 +194,45 @@ controller.hears('help transactions', 'direct_message', function (bot, message) 
   });
 });
 
+controller.hears(['help'], 'direct_message', function (bot, message) {
+  bot.startConversation(message, function(err, convo) {
+        convo.say("Okay I'll help. Getting help...");
+        convo.say({ ephemeral: true,
+
+            "attachments": [
+                {
+                    "fallback": "Summary of commands that I understand. I'm dumb!",
+                    "color": "#36a64f",
+                    "pretext": "Try one of these!",
+                    "author_name": "Help Menu",
+                    "author_link": "http://flickr.com/bobby/",
+                    "author_icon": "http://flickr.com/icons/bobby.jpg",
+                    "title": "AskAnExpert Slack BOT Spec",
+                    "title_link": "https://github.com/askanexpert/slack-bot/blob/master/README.md",
+                    "text": "We have 2 types of commands",
+                    "fields": [
+                        {
+                            "title": "Viewing",
+                            "value": "Type 'help view' for help on view commands. This will help you with stuff like viewing balance, expert lists, and expert availability.",
+                            "short": false
+                        },
+                        {
+                            "title": "Transactions",
+                            "value": "Type 'help transactions' for transaction commands to help you purchase or redeem tokens, or schedule and interact within chats.",
+                            "short": false
+                        }
+                    ],
+                    "image_url": "http://my-website.com/path/to/image.jpg",
+                    "thumb_url": "http://example.com/path/to/thumb.png",
+                    "footer": "Slack API",
+                    "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
+                    "ts": 123456789
+                }
+            ]
+
+      });
+    })
+});
 
 // Defined last if none of the above matches
 controller.on('direct_message', function (bot, message) {
@@ -230,123 +269,6 @@ controller.on('direct_message', function (bot, message) {
       ]
     });
 });
-//
-// "attachments": [
-//     {
-//         "fallback": "Summary of commands that I understand. I'm dumb!",
-//         "color": "#36a64f",
-//         "pretext": "Oops! Didn't really get that. May be try issuing a command?",
-//         "author_name": "View Commands",
-//         "author_link": "http://flickr.com/bobby/",
-//         "author_icon": "http://flickr.com/icons/bobby.jpg",
-//         "title": "Slack BOT Command Spec",
-//         "title_link": "https://github.com/askanexpert/slack-bot/blob/master/README.md",
-//         "text": "",
-//         "fields": [
-//             {
-//                 "title": "show_expert_list",
-//                 "value": "Shows list of all experts on the platform",
-//                 "short": false
-//             },
-//             {
-//                 "title": "show_expert_profile @username",
-//                 "value": "Shows the profile of expert with username",
-//                 "short": false
-//             },
-//             {
-//                 "title": "show_expert_availability @username",
-//                 "value": "Shows the availability of expert with username",
-//                 "short": false
-//             },
-//             {
-//                 "title": "show_balance ",
-//                 "value": "Shows the wallet balance of your account",
-//                 "short": false
-//             },
-//             {
-//                 "title": "show_history",
-//                 "value": "Shows your chat session payment history",
-//                 "short": false
-//             }
-//         ],
-//         "image_url": "http://my-website.com/path/to/image.jpg",
-//         "thumb_url": "http://example.com/path/to/thumb.png",
-//         "footer": "Slack API",
-//         "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-//         "ts": 123456789
-//     },
-//     {
-//         "fallback": "Summary of commands that I understand. I'm dumb!",
-//         "color": "#36a64f",
-//         "pretext": "",
-//         "author_name": "Transaction Commands",
-//         "author_link": "http://flickr.com/bobby/",
-//         "author_icon": "http://flickr.com/icons/bobby.jpg",
-//         "title": "Slack BOT Command Spec",
-//         "title_link": "https://github.com/askanexpert/slack-bot/blob/master/README.md",
-//         "text": "",
-//         "fields": [
-//             {
-//                 "title": "schedule at <time_slot> @username",
-//                 "value": "Schedules session with expert at time slot. We'll follow this up with a confirmation for scheduling payment.",
-//                 "short": false
-//             },
-//             {
-//                 "title": "purchase <number_of_tokens>",
-//                 "value": "Helps you purchase tokens from us",
-//                 "short": false
-//             },
-//             {
-//                 "title": "redeem <number_of_tokens>",
-//                 "value": "Helps you redeem tokens from your account",
-//                 "short": false
-//             },
-//             {
-//                 "title": "start_chat",
-//                 "value": "Issued when starting a chat with expert in private channel. Starts billing period",
-//                 "short": false
-//             },
-//             {
-//                 "title": "end_chat",
-//                 "value": "Stops billing period for chat and processes payment according to rate for expert's time",
-//                 "short": false
-//             }
-//         ],
-//         "image_url": "http://my-website.com/path/to/image.jpg",
-//         "thumb_url": "http://example.com/path/to/thumb.png",
-//         "footer": "Slack API",
-//         "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-//         "ts": 123456789
-//     }
-// ]
-// Name can be anything - interact, ask question, or even regex etc.
-// controller.hears('interact', 'direct_message', function(bot, message) {
-//
-//     bot.reply(message, {
-//         attachments:[
-//             {
-//                 title: 'Do you want to interact with my buttons?',
-//                 callback_id: '123',
-//                 attachment_type: 'default',
-//                 actions: [
-//                     {
-//                         "name":"yes",
-//                         "text": "Yes",
-//                         "value": "yes",
-//                         "type": "button",
-//                     },
-//                     {
-//                         "name":"no",
-//                         "text": "No",
-//                         "value": "no",
-//                         "type": "button",
-//                     }
-//                 ]
-//             }
-//         ]
-//     });
-// });
-
 /**
  * AN example of what could be:
  * Any un-handled direct mention gets a reaction and a pat response!
