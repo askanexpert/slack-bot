@@ -46,14 +46,14 @@ Following are the commands for the current version of the bot v1.0. The BOT oper
 
 ### Channel Commands
 ```javascript
-   @bot_name start_chat
+   @bot_name start_chat ["start" && "chat"]
 ```
   - Starts the billing period for chat
   - This can be done by user or expert
   - First 5 minutes free as scheduling fee paid
 
 ```javascript
-  @bot_name end_chat
+  @bot_name end_chat ["end" && "chat"]
 ```
   - Ends the billing period for chat
   - This can be done by expert or user
@@ -65,55 +65,46 @@ Following are the commands for the current version of the bot v1.0. The BOT oper
 These are word combinations that trigger the bot's response system.
 
 ```javascript
-  expert list
+  show_expert_list ["show" && "expert" && "list"]
 ```
 - Shows the list of experts, available on the platform
 ```javascript
-  expert profile @username
+  show_expert_profile @username ["profile"]
 ```
 - Shows the detailed profile of expert with username
+- Also shows available time slots for easy scheduling
 
 ```javascript
-  expert availability @username
-```
-- Shows the time slots for availability of expert with username
-
-```javascript
-  expert schedule at <time_slot> @username
+  schedule at <time_slot> @username ["schedule" && "at" -> "timeslot regex"]
 ```
 - Schedules chat for given time_slot with expert
 - Fees for first 5 minutes of billing cycle are cut as deposit
 - Asks for confirmation
 
 ```javascript
-  show balance
+  show_balance || show_wallet
 ```
 - Shows the wallet balance
+- Gives link to user to view wallet dashboard. (Optional)
 
 ```javascript
-  show activity, show payment history
+  show_activity, ["show" && "history"]
 ```
 - Shows the ledger activity of payments related to user
 
 ```javascript
-  purchase <tokens>
+  purchase <tokens> ["purchase"]
 ```
 - Purchases specific number of tokens (token transfer: company to user)
 - Deducts money from user on web dashboard (credit card, right now mock)
 - Asks for confirmation
 
 ```javascript
-  redeem <tokens>
+  redeem <tokens> ["redeem"]
 ```
 - Redeems tokens from user wallet (token transfer: user to company)
 - Deposits money into user account on web dashboard (credit card, right now mock)
 - Asks for confirmation
-
-**Optional**
-```javascript
-  view wallet
-```
-- Gives link to user to view wallet dashboard.
 
 # Notes
 ### Word Combinations
