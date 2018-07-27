@@ -69,14 +69,10 @@ These are word combinations that trigger the bot's response system.
 ```
 - Shows the list of experts, available on the platform
 ```javascript
-  profile @username ["profile"]
+  show_expert_profile @username ["profile"]
 ```
 - Shows the detailed profile of expert with username
-
-```javascript
-  availability @username ["availability"]
-```
-- Shows the time slots for availability of expert with username
+- Also shows available time slots for easy scheduling
 
 ```javascript
   schedule at <time_slot> @username ["schedule" && "at" -> "timeslot regex"]
