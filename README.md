@@ -65,33 +65,33 @@ Following are the commands for the current version of the bot v1.0. The BOT oper
 These are word combinations that trigger the bot's response system.
 
 ```javascript
-  expert list
+  show_expert_list
 ```
 - Shows the list of experts, available on the platform
 ```javascript
-  expert profile @username
+  profile @username
 ```
 - Shows the detailed profile of expert with username
 
 ```javascript
-  expert availability @username
+  availability @username
 ```
 - Shows the time slots for availability of expert with username
 
 ```javascript
-  expert schedule at <time_slot> @username
+  schedule at <time_slot> @username
 ```
 - Schedules chat for given time_slot with expert
 - Fees for first 5 minutes of billing cycle are cut as deposit
 - Asks for confirmation
 
 ```javascript
-  show balance
+  show_balance
 ```
 - Shows the wallet balance
 
 ```javascript
-  show activity, show payment history
+  show_activity, show payment history
 ```
 - Shows the ledger activity of payments related to user
 
