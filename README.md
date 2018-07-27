@@ -86,9 +86,10 @@ These are word combinations that trigger the bot's response system.
 - Asks for confirmation
 
 ```javascript
-  show_balance
+  show_balance || show_wallet
 ```
 - Shows the wallet balance
+- Gives link to user to view wallet dashboard. (Optional)
 
 ```javascript
   show_activity, ["show" && "history"]
@@ -108,12 +109,6 @@ These are word combinations that trigger the bot's response system.
 - Redeems tokens from user wallet (token transfer: user to company)
 - Deposits money into user account on web dashboard (credit card, right now mock)
 - Asks for confirmation
-
-**Optional**
-```javascript
-  view wallet
-```
-- Gives link to user to view wallet dashboard.
 
 # Notes
 ### Word Combinations
