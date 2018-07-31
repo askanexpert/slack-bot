@@ -1,5 +1,9 @@
 OSTSDK = require('@ostdotcom/ost-sdk-js');
 
+// Sample users
+// 17d1187e-6455-4930-afb6-bdc1b7ef27c7
+// 2c4d3b38-2103-4303-a68b-e9a569a7a183
+
 // User Action Constants
 const OST_ACTIONS_PAY_EXPERT = "pay";
 const PAY_ACTION_ID = "39619";
@@ -89,15 +93,31 @@ const showLedgerForUser = function (id) {
 
 // Transaction Related api functions
 // NOTE:- Amounts specified are in USD!!!
-
 // User-to-User transactions
 const executePayTransaction = function (from, to, amount) {
-
+  transactionService.execute({
+    from_user_id:from,
+    to_user_id:to,
+    action_id:PAY_ACTION_ID,
+    amount})
+    .then(function(res) {
+      console.log(JSON.stringify(res, undefined, 2));
+    }).catch(function(err) {
+      console.log(JSON.stringify(err, undefined, 2));
+    });
 }
 
 const executeScheduleTransaction = function(from, to, amount) {
-  // amount is 5% of expert's hourly fees here
-
+  transactionService.execute({
+    from_user_id:from,
+    to_user_id:to,
+    action_id:SCHEDULE_ACTION_ID,
+    amount})
+    .then(function(res) {
+      console.log(JSON.stringify(res, undefined, 2));
+    }).catch(function(err) {
+      console.log(JSON.stringify(err, undefined, 2));
+    });
 }
 
 // Company-to-User transactions
@@ -168,7 +188,7 @@ const listAllActions = function () {
 }
 
 // Airdrop related api functions
-const airdropTokensToUser = function (amount, userId) {
+const airdropTokensToUser = function (userId, amount) {
   airdropService.execute({amount, user_ids: userId})
   .then(function(res) {
     console.log(JSON.stringify(res, undefined, 2));
@@ -178,7 +198,7 @@ const airdropTokensToUser = function (amount, userId) {
 }
 
 // userIds is an array here
-const airdropTokensToUsers = function (amount, userIds) {
+const airdropTokensToUsers = function (userIds, amount) {
   airdropService.execute({amount, user_ids: userIds.join(",")})
   .then(function(res) {
     console.log(JSON.stringify(res, undefined, 2));
