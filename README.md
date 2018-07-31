@@ -75,13 +75,6 @@ These are word combinations that trigger the bot's response system.
 - Also shows available time slots for easy scheduling
 
 ```javascript
-  schedule at <time_slot> @username ["schedule" && "at" -> "timeslot regex"]
-```
-- Schedules chat for given time_slot with expert
-- Fees for first 5 minutes of billing cycle are cut as deposit
-- Asks for confirmation
-
-```javascript
   show_balance || show_wallet
 ```
 - Shows the wallet balance
@@ -91,6 +84,13 @@ These are word combinations that trigger the bot's response system.
   show_activity, ["show" && "history"]
 ```
 - Shows the ledger activity of payments related to user
+
+```javascript
+  schedule at <time_slot> @username ["schedule" && "at" -> "timeslot regex"]
+```
+- Schedules chat for given time_slot with expert
+- Fees for first 5 minutes of billing cycle are cut as deposit
+- Asks for confirmation
 
 ```javascript
   purchase <tokens> ["purchase"]
