@@ -1,4 +1,5 @@
 const OST = require('./modules/ost/ost');
+
 /**
  * A Bot for Slack!
  */
@@ -87,12 +88,14 @@ controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "I'm here!");
 });
 
-controller.hears(['hello','hi', 'hey', 'how'], 'direct_message', function (bot, message) {
+controller.hears(['hello','hi', 'hey', 'how'], 'direct_message',
+function (bot, message) {
   bot.api.users.info({user: message.user}, (error, response) => {
       const {name, real_name, profile} = response.user;
-      console.log(name, real_name, profile);
-
-      bot.reply(message, `Hey ${real_name}! How's your day going? Remember, in case you need any help, you can always type **help**!`);
+      OST.createNewUser(real_name).then(() => {
+        bot.reply(message,
+          `Hey ${real_name}! How's your day going? Remember, in case you need any help, you can always type **help**!`);
+      });
   });
 });
 
