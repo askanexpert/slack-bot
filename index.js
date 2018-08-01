@@ -397,7 +397,7 @@ controller.on(['mention','direct_mention'], function (bot, message) {
               {
                   "fallback": "Summary of commands that I understand. I'm dumb!",
                   "color": "#36a64f",
-                  "pretext": "Try one of these! You can always directly message me for other help and purchasing or redeeming tokens",
+                  "pretext": `Firstly invite the expert to this channel. Then you can use the following commands.`,
                   "fields": [
                       {
                           "title": "start_chat @Headmaster",
@@ -409,7 +409,8 @@ controller.on(['mention','direct_mention'], function (bot, message) {
                           "value": "This will end the billing period with the expert",
                           "short": false
                       }
-                  ]
+                  ],
+                  "footer": "You can always directly message me for other help and purchasing or redeeming tokens"
               }
           ]
       }); // end of convo say attachments
