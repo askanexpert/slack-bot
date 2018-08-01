@@ -85,11 +85,6 @@ controller.on('rtm_close', function (bot) {
 /**
  * Core bot logic goes here!
  */
-// BEGIN EDITING HERE!
-
-controller.on('bot_channel_join', function (bot, message) {
-    bot.reply(message, "I'm here!");
-});
 
 // Exactly match a set of words
 controller.hears([new RegExp('^hi|hey|hello|how$','i'),], 'direct_message',
@@ -157,43 +152,6 @@ controller.hears([new RegExp('^purchase [0-9]+$','i')], 'direct_message', functi
 controller.hears([new RegExp('^redeem [0-9]+$','i')], 'direct_message', function (bot, message) {
   bot.reply(message, "I'm here for redeeming!");
 });
-
-
-controller.on(['mention','direct_mention'], function (bot, message) {
-  // mention and direct_mention give different results for message.text
-  // Hence we use includes and not exact match
-  if(message.text.includes("start_chat")) {
-    bot.reply(message, "I'm here for starting chat!");
-  } else if(message.text.includes("end_chat")) {
-    bot.reply(message, "I'm here for ending chat!");
-  } else {
-    bot.startConversation(message, function(err, convo) {
-      convo.say("Sorry, didn't get that. Try the following...");
-      convo.say({ ephemeral: true,
-          "attachments": [
-              {
-                  "fallback": "Summary of commands that I understand. I'm dumb!",
-                  "color": "#36a64f",
-                  "pretext": "Try one of these!",
-                  "fields": [
-                      {
-                          "title": "start_chat @Headmaster",
-                          "value": "This will start the billing period with the expert",
-                          "short": false
-                      },
-                      {
-                          "title": "end_chat @Headmaster",
-                          "value": "This will end the billing period with the expert",
-                          "short": false
-                      }
-                  ]
-              }
-          ]
-      }); // end of convo say attachments
-    }) // end of startConversation
-  } // end of if-else block
-});
-
 
 controller.hears(
   [new RegExp('^help view|help views$','i')],
@@ -284,14 +242,42 @@ controller.hears(
                     "title": "redeem <number_of_tokens>",
                     "value": "Helps you redeem tokens from your account",
                     "short": false
-                },
+                }
+            ],
+            "image_url": "http://my-website.com/path/to/image.jpg",
+            "thumb_url": "http://example.com/path/to/thumb.png",
+            "footer": "Slack API",
+            "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
+            "ts": 123456789
+        }
+      ]
+  });
+});
+
+controller.hears(
+  [new RegExp('^help chat|help chats$','i')],
+  'direct_message',
+  function (bot, message) {
+    bot.reply(message, {
+        "attachments": [
+          {
+            "fallback": "Summary of commands that I understand. I'm dumb!",
+            "color": "#36a64f",
+            "pretext": "These commands can be issued once I'm invited to a private channel in which you and the expert are chatting",
+            "author_name": "Chat Commands",
+            "author_link": "http://flickr.com/bobby/",
+            "author_icon": "http://flickr.com/icons/bobby.jpg",
+            "title": "Slack BOT Command Spec",
+            "title_link": "https://github.com/askanexpert/slack-bot/blob/master/README.md",
+            "text": "",
+            "fields": [
                 {
-                    "title": "start_chat",
+                    "title": "start_chat @Headmaster",
                     "value": "Issued when starting a chat with expert in private channel. Starts billing period",
                     "short": false
                 },
                 {
-                    "title": "end_chat",
+                    "title": "end_chat @Headmaster",
                     "value": "Stops billing period for chat and processes payment according to rate for expert's time",
                     "short": false
                 }
@@ -332,6 +318,11 @@ controller.hears(['help'], 'direct_message', function (bot, message) {
                             "title": "Transactions",
                             "value": "Type 'help transactions' for transaction commands to help you purchase or redeem tokens, or schedule and interact within chats.",
                             "short": false
+                        },
+                        {
+                            "title": "Chats",
+                            "value": "Type 'help chat' for chat commands to help you with chats in a private channel with the expert. These include commands to start or end chats (billing)",
+                            "short": false
                         }
                     ],
                     "image_url": "http://my-website.com/path/to/image.jpg",
@@ -370,6 +361,11 @@ controller.on('direct_message', function (bot, message) {
                       "title": "Transactions",
                       "value": "Type 'help transactions' for transaction commands to help you purchase or redeem tokens, or schedule and interact within chats.",
                       "short": false
+                  },
+                  {
+                      "title": "Chatting",
+                      "value": "For chatting session related help, type 'help chat'. These include commands to start and end chats (billing) in a private channel with the expert",
+                      "short": false
                   }
               ],
               "image_url": "http://my-website.com/path/to/image.jpg",
@@ -381,19 +377,42 @@ controller.on('direct_message', function (bot, message) {
       ]
     });
 });
-/**
- * AN example of what could be:
- * Any un-handled direct mention gets a reaction and a pat response!
- */
-//controller.on('direct_message,mention,direct_mention', function (bot, message) {
-//    bot.api.reactions.add({
-//        timestamp: message.ts,
-//        channel: message.channel,
-//        name: 'robot_face',
-//    }, function (err) {
-//        if (err) {
-//            console.log(err)
-//        }
-//        bot.reply(message, 'I heard you loud and clear boss.');
-//    });
-//});
+
+controller.on('bot_channel_join', function (bot, message) {
+    bot.reply(message, "I'm here. Remember to tag me @Headmaster for any help!");
+});
+
+controller.on(['mention','direct_mention'], function (bot, message) {
+  // mention and direct_mention give different results for message.text
+  // Hence we use includes and not exact match
+  if(message.text.includes("start_chat")) {
+    bot.reply(message, "I'm here for starting chat!");
+  } else if(message.text.includes("end_chat")) {
+    bot.reply(message, "I'm here for ending chat!");
+  } else {
+    bot.startConversation(message, function(err, convo) {
+      convo.say("Sorry, didn't get that. Try the following...");
+      convo.say({ ephemeral: true,
+          "attachments": [
+              {
+                  "fallback": "Summary of commands that I understand. I'm dumb!",
+                  "color": "#36a64f",
+                  "pretext": "Try one of these! You can always directly message me for other help and purchasing or redeeming tokens",
+                  "fields": [
+                      {
+                          "title": "start_chat @Headmaster",
+                          "value": "This will start the billing period with the expert",
+                          "short": false
+                      },
+                      {
+                          "title": "end_chat @Headmaster",
+                          "value": "This will end the billing period with the expert",
+                          "short": false
+                      }
+                  ]
+              }
+          ]
+      }); // end of convo say attachments
+    }) // end of startConversation
+  } // end of if-else block
+});
