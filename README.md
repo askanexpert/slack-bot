@@ -37,9 +37,15 @@ CLIENT_ID=xxx.yyy CLIENT_SECRET=abc PORT=8765 npm run dev-watch
 
 **Step 4**
 
+Spawn the mongo server. Run the following from inside mongo-server directory. 
+```bash
+./mongo/bin/mongod --dbpath ./mongo-data
+```
+
+**Step 5**
+
 
 Check the bot behavior in slack. DONE!
-
 
 # Behavioral Details
 Following are the commands for the current version of the bot v1.0. The BOT operates by creating a new private channel, inviting the user and the expert at the scheduled time to that channel, setting topic for the channel and joining that channel. It then monitors the following commands in the private channel.
