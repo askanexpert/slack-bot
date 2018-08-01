@@ -91,7 +91,8 @@ controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "I'm here!");
 });
 
-controller.hears(['hello','hi', 'hey', 'how'], 'direct_message',
+// Exactly match a set of words
+controller.hears([new RegExp('^hi|hey|hello|how$','i'),], 'direct_message',
   function (bot, message) {
     bot.api.users.info({user: message.user}, (error, response) => {
         const {name, real_name, profile} = response.user;
@@ -111,7 +112,8 @@ controller.hears(['hello','hi', 'hey', 'how'], 'direct_message',
     });
 });
 
-controller.hears(['show_my_profile'], 'direct_message', function (bot, message) {
+// Exactly match a particular word
+controller.hears([new RegExp('^show_my_profile$','i')], 'direct_message', function (bot, message) {
   // bot.api.users.info({user: message.user}, (error, response) => {
   //   const {name, real_name, profile} = response.user;
   //   return User.findOne({"email": profile.email})
