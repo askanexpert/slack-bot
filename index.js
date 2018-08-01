@@ -3,6 +3,8 @@ const {Expert} = require('./models/expert');
 const OST = require('./modules/ost/ost');
 const Responses = require('./modules/responses/responses');
 
+const USER_CHANNEL_ID = "CC29TQ086";
+const EXPERT_CHANNEL_ID = "";
 /**
  * A Bot for Slack!
  */
@@ -89,21 +91,10 @@ controller.on('rtm_close', function (bot) {
 // Exactly match a set of words
 controller.hears([new RegExp('^hi|hey|hello|how$','i'),], 'direct_message',
   function (bot, message) {
-    bot.api.users.info({user: message.user}, (error, response) => {
-        const {name, real_name, profile} = response.user;
-        OST.createNewUser(real_name)
-        .then((user) => {
-          // console.log(user);
-          var mongoUser = new User(user);
-          mongoUser.email = profile.email;
-          mongoUser.ost_id = user.id;
-          mongoUser.save();
-          return Promise.resolve(mongoUser);
-        }).then((mongoUser) => {
-          console.log(mongoUser);
-          bot.reply(message,
-            `Hey ${mongoUser.name} ! How's your day going? Remember, in case you need any help, you can always type **help**!`);
-        }).catch(console.log);
+    bot.startConversation(message, function(err, convo) {
+      convo.say(`Hey! How's your day going?`);
+      convo.say(
+        `You can always type "help" to begin exploring the platform`);
     });
 });
 
@@ -263,7 +254,7 @@ controller.hears(
           {
             "fallback": "Summary of commands that I understand. I'm dumb!",
             "color": "#36a64f",
-            "pretext": "These commands can be issued once I'm invited to a private channel in which you and the expert are chatting",
+            "pretext": "These commands can be issued once you're in a channel and chatting with the expert. Remember to invite me and tag me with @Headmaster here!",
             "author_name": "Chat Commands",
             "author_link": "http://flickr.com/bobby/",
             "author_icon": "http://flickr.com/icons/bobby.jpg",
@@ -292,6 +283,10 @@ controller.hears(
   });
 });
 
+controller.hears(['thank'], 'direct_message', function (bot, message) {
+  bot.reply(message, 'Anytime! Always at your service.')
+})
+
 controller.hears(['help'], 'direct_message', function (bot, message) {
   bot.startConversation(message, function(err, convo) {
         convo.say("Okay I'll help. Getting help...");
@@ -307,7 +302,7 @@ controller.hears(['help'], 'direct_message', function (bot, message) {
                     "author_icon": "http://flickr.com/icons/bobby.jpg",
                     "title": "AskAnExpert Slack BOT Spec",
                     "title_link": "https://github.com/askanexpert/slack-bot/blob/master/README.md",
-                    "text": "We have 2 types of commands",
+                    "text": "We have 3 types of help commands",
                     "fields": [
                         {
                             "title": "Viewing",
@@ -350,7 +345,7 @@ controller.on('direct_message', function (bot, message) {
               "author_icon": "http://flickr.com/icons/bobby.jpg",
               "title": "AskAnExpert Slack BOT Spec",
               "title_link": "https://github.com/askanexpert/slack-bot/blob/master/README.md",
-              "text": "We have 2 types of commands",
+              "text": "We have 3 types of help commands",
               "fields": [
                   {
                       "title": "Viewing",
@@ -378,8 +373,30 @@ controller.on('direct_message', function (bot, message) {
     });
 });
 
-controller.on('bot_channel_join', function (bot, message) {
-    bot.reply(message, "I'm here. Remember to tag me @Headmaster for any help!");
+controller.on('user_channel_join', function (bot, message) {
+    console.log(message.channel);
+    if(message.channel == USER_CHANNEL_ID) {
+      console.log('New user joined channel');
+      bot.api.users.info({user: message.user}, (error, response) => {
+          const {name, real_name, profile} = response.user;
+          OST.createNewUser(real_name)
+          .then((user) => {
+            // console.log(user);
+            var mongoUser = new User(user);
+            mongoUser.email = profile.email;
+            mongoUser.ost_id = user.id;
+            mongoUser.save();
+            return Promise.resolve(mongoUser);
+          }).then((mongoUser) => {
+            console.log(mongoUser);
+            bot.startConversation(message, function(err, convo) {
+              convo.say(`Hey ${mongoUser.name} ! Welcome to the user community!`);
+              convo.say(
+                `Remember, for help on platform usage, you can always directly message me.`);
+            });
+          }).catch(console.log);
+      });
+    }
 });
 
 controller.on(['mention','direct_mention'], function (bot, message) {
@@ -389,6 +406,8 @@ controller.on(['mention','direct_mention'], function (bot, message) {
     bot.reply(message, "I'm here for starting chat!");
   } else if(message.text.includes("end_chat")) {
     bot.reply(message, "I'm here for ending chat!");
+  } else if(message.text.toLowerCase().includes("thank")) {
+    bot.reply(message, "Not a problem. Always at your service!")
   } else {
     bot.startConversation(message, function(err, convo) {
       convo.say("Sorry, didn't get that. Try the following...");
