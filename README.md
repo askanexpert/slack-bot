@@ -65,6 +65,11 @@ Following are the commands for the current version of the bot v1.0. The BOT oper
 These are word combinations that trigger the bot's response system.
 
 ```javascript
+  show_my_profile ["show" && "my" && "profile"]
+```
+- Shows user profile on the platform
+
+```javascript
   show_expert_list ["show" && "expert" && "list"]
 ```
 - Shows the list of experts, available on the platform
