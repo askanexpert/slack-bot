@@ -41,7 +41,9 @@ const createNewUser = function (name) {
   console.log(`Creating new user with name ${name}`);
   return userService.create({name})
   .then(function(a){
-    console.log(JSON.stringify(a, undefined, 2))
+    // console.log(a.data.user);
+    // console.log(JSON.stringify(a, undefined, 2));
+    return a.data.user;
   }).catch(console.log);
 }
 

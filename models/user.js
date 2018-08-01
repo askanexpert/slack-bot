@@ -1,4 +1,3 @@
-require('./../config/config');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const _ = require('lodash');
@@ -18,7 +17,6 @@ const UserSchema = mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
     unique: true,
     minLength: 1,
     trim: true,
@@ -27,10 +25,12 @@ const UserSchema = mongoose.Schema({
       message: `{VALUE} is not a valid E-mail`
     }
   },
-  addresses: [{
-    ost: { type: String, default: "N/A" },
-    erc20 : { type: String, default: "N/A" }
-  }],
+  addresses: [[
+    {
+      type: String,
+      default: "N/A"
+    }
+  ]],
   airdropped_tokens: {
     type: Number,
     default: 0

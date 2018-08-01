@@ -1,4 +1,7 @@
+const {User} = require('./models/user');
+const {Expert} = require('./models/expert');
 const OST = require('./modules/ost/ost');
+const Responses = require('./modules/responses/responses');
 
 /**
  * A Bot for Slack!
@@ -89,14 +92,36 @@ controller.on('bot_channel_join', function (bot, message) {
 });
 
 controller.hears(['hello','hi', 'hey', 'how'], 'direct_message',
-function (bot, message) {
-  bot.api.users.info({user: message.user}, (error, response) => {
-      const {name, real_name, profile} = response.user;
-      OST.createNewUser(real_name).then(() => {
-        bot.reply(message,
-          `Hey ${real_name}! How's your day going? Remember, in case you need any help, you can always type **help**!`);
-      });
-  });
+  function (bot, message) {
+    bot.api.users.info({user: message.user}, (error, response) => {
+        const {name, real_name, profile} = response.user;
+        OST.createNewUser(real_name)
+        .then((user) => {
+          // console.log(user);
+          var mongoUser = new User(user);
+          mongoUser.email = profile.email;
+          mongoUser.ost_id = user.id;
+          mongoUser.save();
+          return Promise.resolve(mongoUser);
+        }).then((mongoUser) => {
+          console.log(mongoUser);
+          bot.reply(message,
+            `Hey ${mongoUser.name} ! How's your day going? Remember, in case you need any help, you can always type **help**!`);
+        }).catch(console.log);
+    });
+});
+
+controller.hears(['show_my_profile'], 'direct_message', function (bot, message) {
+  // bot.api.users.info({user: message.user}, (error, response) => {
+  //   const {name, real_name, profile} = response.user;
+  //   return User.findOne({"email": profile.email})
+  // }).then((mongoUser) => {
+  //   const attachment = Responses.formattedUserAttachment(mongoUser);
+  //   bot.reply(message,
+  //     "Hi Profile"
+  //   )
+  // }).catch(console.log);
+  bot.reply(message, "I'm here for profile!");
 });
 
 controller.hears(['views','view', 'help view'], 'direct_message', function (bot, message) {
