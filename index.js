@@ -114,6 +114,11 @@ controller.hears(['views','view', 'help view'], 'direct_message', function (bot,
           "text": "",
           "fields": [
               {
+                  "title": "show_my_profile",
+                  "value": "Shows user's profile on the platform",
+                  "short": false
+              },
+              {
                   "title": "show_expert_list",
                   "value": "Shows list of all experts on the platform",
                   "short": false
