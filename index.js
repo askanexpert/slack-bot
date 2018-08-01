@@ -126,6 +126,75 @@ controller.hears([new RegExp('^show_my_profile$','i')], 'direct_message', functi
   bot.reply(message, "I'm here for profile!");
 });
 
+controller.hears([new RegExp('^show_expert_list$','i')], 'direct_message', function (bot, message) {
+  bot.reply(message, "I'm here for expert list!");
+});
+
+controller.hears([new RegExp('^show_expert_profile @[a-z]+$','i')], 'direct_message', function (bot, message) {
+  bot.reply(message, "I'm here for expert profile!");
+});
+
+controller.hears([new RegExp('^show_expert_availability @[a-z]+$','i')], 'direct_message', function (bot, message) {
+  bot.reply(message, "I'm here for expert availability!");
+});
+
+controller.hears([new RegExp('^show_balance$','i')], 'direct_message', function (bot, message) {
+  bot.reply(message, "I'm here for showing balance!");
+});
+
+controller.hears([new RegExp('^show_history$','i')], 'direct_message', function (bot, message) {
+  bot.reply(message, "I'm here for showing history!");
+});
+
+controller.hears([new RegExp('^schedule at [0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9] @[a-z]+$','i')], 'direct_message', function (bot, message) {
+  bot.reply(message, "I'm here for scheduling!");
+});
+
+controller.hears([new RegExp('^purchase [0-9]+$','i')], 'direct_message', function (bot, message) {
+  bot.reply(message, "I'm here for purchasing!");
+});
+
+controller.hears([new RegExp('^redeem [0-9]+$','i')], 'direct_message', function (bot, message) {
+  bot.reply(message, "I'm here for redeeming!");
+});
+
+
+controller.on(['mention','direct_mention'], function (bot, message) {
+  // mention and direct_mention give different results for message.text
+  // Hence we use includes and not exact match
+  if(message.text.includes("start_chat")) {
+    bot.reply(message, "I'm here for starting chat!");
+  } else if(message.text.includes("end_chat")) {
+    bot.reply(message, "I'm here for ending chat!");
+  } else {
+    bot.startConversation(message, function(err, convo) {
+      convo.say("Sorry, didn't get that. Try the following...");
+      convo.say({ ephemeral: true,
+          "attachments": [
+              {
+                  "fallback": "Summary of commands that I understand. I'm dumb!",
+                  "color": "#36a64f",
+                  "pretext": "Try one of these!",
+                  "fields": [
+                      {
+                          "title": "start_chat @Headmaster",
+                          "value": "This will start the billing period with the expert",
+                          "short": false
+                      },
+                      {
+                          "title": "end_chat @Headmaster",
+                          "value": "This will end the billing period with the expert",
+                          "short": false
+                      }
+                  ]
+              }
+          ]
+      }); // end of convo say attachments
+    }) // end of startConversation
+  } // end of if-else block
+});
+
+
 controller.hears(
   [new RegExp('^help view|help views$','i')],
   'direct_message',
