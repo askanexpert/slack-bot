@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const {User} = require('./models/user');
 const {Expert} = require('./models/expert');
 const OST = require('./modules/ost/ost');
@@ -11,6 +12,9 @@ const EXPERT_CHANNEL_ID = "GC10H2HL2";
  */
 
 // CLIENT_ID=xxx CLIENT_SECRET=yyy PORT=8765 npm run dev-watch
+// Connecting to mongoose for data persistence
+mongoose.Promise = global.Promise;
+mongoose.connect("mongodb://localhost:27017/AAEApp");
 
 /**
  * Define a function for initiating a conversation on installation
@@ -192,14 +196,24 @@ controller.on('user_channel_join', function (bot, message) {
       console.log('New user joined channel');
       bot.api.users.info({user: message.user}, (error, response) => {
           const {name, real_name, profile} = response.user;
-          OST.createNewUser(real_name)
-          .then((user) => {
-            // console.log(user);
-            var mongoUser = new User(user);
-            mongoUser.email = profile.email;
-            mongoUser.ost_id = user.id;
-            mongoUser.save();
-            return Promise.resolve(mongoUser);
+          User.findOne({email: profile.email}, function(err, user) {
+            console.log("Found user!");
+            console.log(user);
+            if(user) {
+              console.log("User already exists!");
+              return Promise.resolve(user);
+            } else {
+              console.log("Creating new user...");
+              OST.createNewUser(real_name)
+              .then((user) => {
+                // console.log(user);
+                var mongoUser = new User(user);
+                mongoUser.email = profile.email;
+                mongoUser.ost_id = user.id;
+                mongoUser.save();
+                return Promise.resolve(mongoUser);
+              })
+            } // end of if else block
           }).then((mongoUser) => {
             console.log(mongoUser);
             bot.startConversation(message, function(err, convo) {
@@ -209,10 +223,10 @@ controller.on('user_channel_join', function (bot, message) {
               convo.say(
                 `DM me with "Hey" to get a welcome bonus of 100 AETOs :wink:.`);
             });
-          }).catch(console.log);
-      });
-    }
-});
+          }).catch(console.log); // end of user.findone
+      }); // end of bot.api.user.info
+    } // end of user-channel check
+}); // end of controller
 
 controller.on(['mention','direct_mention'], function (bot, message) {
   // do nothing in case mentioned in user-channel
