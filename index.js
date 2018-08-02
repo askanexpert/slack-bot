@@ -1,10 +1,11 @@
 const {User} = require('./models/user');
 const {Expert} = require('./models/expert');
 const OST = require('./modules/ost/ost');
-const Responses = require('./modules/responses/responses');
+const Attachments = require('./constants/attachments');
+const Responses = require('./constants/responses');
 
 const USER_CHANNEL_ID = "CC29TQ086";
-const EXPERT_CHANNEL_ID = "";
+const EXPERT_CHANNEL_ID = "GC10H2HL2";
 /**
  * A Bot for Slack!
  */
@@ -94,21 +95,7 @@ controller.hears([new RegExp('^hi|hey|hello|how$','i'),], 'direct_message',
     bot.startConversation(message, function(err, convo) {
       convo.say(`Hey! How's your day going?`);
       convo.say({ ephemeral: true,
-          "attachments": [
-              {
-                  "fallback": "Welcome Bonus!",
-                  "color": "#36a64f",
-                  "pretext": "",
-                  "fields": [
-                      {
-                          "title": "Welcome bonus deposited",
-                          "value": "Congrats! I've deposited 100 AETOs into your aae account.",
-                          "short": false
-                      }
-                  ],
-                  "footer": "You can see further details on how to view balance by typing 'help'"
-              }
-          ]
+          "attachments": [ Attachments.welcomeBonus ]
         }); // end of convo say attachments
       convo.say(
         `You can always type "help" to begin exploring the platform`);
@@ -117,15 +104,6 @@ controller.hears([new RegExp('^hi|hey|hello|how$','i'),], 'direct_message',
 
 // Exactly match a particular word
 controller.hears([new RegExp('^show_my_profile$','i')], 'direct_message', function (bot, message) {
-  // bot.api.users.info({user: message.user}, (error, response) => {
-  //   const {name, real_name, profile} = response.user;
-  //   return User.findOne({"email": profile.email})
-  // }).then((mongoUser) => {
-  //   const attachment = Responses.formattedUserAttachment(mongoUser);
-  //   bot.reply(message,
-  //     "Hi Profile"
-  //   )
-  // }).catch(console.log);
   bot.reply(message, "I'm here for profile!");
 });
 
@@ -166,56 +144,7 @@ controller.hears(
   'direct_message',
   function (bot, message) {
     bot.reply(message, {
-      "attachments": [
-        {
-            "fallback": "Summary of commands that I understand. I'm dumb!",
-            "color": "#36a64f",
-            "pretext": "Here's a list of view commands that I support",
-            "author_name": "View Commands",
-            "author_link": "http://flickr.com/bobby/",
-            "author_icon": "http://flickr.com/icons/bobby.jpg",
-            "title": "Slack BOT Command Spec",
-            "title_link": "https://github.com/askanexpert/slack-bot/blob/master/README.md",
-            "text": "",
-            "fields": [
-                {
-                    "title": "show_my_profile",
-                    "value": "Shows user's profile on the platform",
-                    "short": false
-                },
-                {
-                    "title": "show_expert_list",
-                    "value": "Shows list of all experts on the platform",
-                    "short": false
-                },
-                {
-                    "title": "show_expert_profile @username",
-                    "value": "Shows the profile of expert with username",
-                    "short": false
-                },
-                {
-                    "title": "show_expert_availability @username",
-                    "value": "Shows the availability of expert with username",
-                    "short": false
-                },
-                {
-                    "title": "show_balance ",
-                    "value": "Shows the wallet balance of your account",
-                    "short": false
-                },
-                {
-                    "title": "show_history",
-                    "value": "Shows your chat session payment history",
-                    "short": false
-                }
-            ],
-            "image_url": "http://my-website.com/path/to/image.jpg",
-            "thumb_url": "http://example.com/path/to/thumb.png",
-            "footer": "Slack API",
-            "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-            "ts": 123456789
-        }
-      ]
+      "attachments": [ Attachments.helpView ]
   });
 });
 
@@ -224,41 +153,7 @@ controller.hears(
   'direct_message',
   function (bot, message) {
     bot.reply(message, {
-        "attachments": [
-          {
-            "fallback": "Summary of commands that I understand. I'm dumb!",
-            "color": "#36a64f",
-            "pretext": "Here's a list of transaction commands that I support",
-            "author_name": "Transaction Commands",
-            "author_link": "http://flickr.com/bobby/",
-            "author_icon": "http://flickr.com/icons/bobby.jpg",
-            "title": "Slack BOT Command Spec",
-            "title_link": "https://github.com/askanexpert/slack-bot/blob/master/README.md",
-            "text": "",
-            "fields": [
-                {
-                    "title": "schedule at <time_slot> @username",
-                    "value": "Schedules session with expert at time slot. We'll follow this up with a confirmation for scheduling payment.",
-                    "short": false
-                },
-                {
-                    "title": "purchase <number_of_tokens>",
-                    "value": "Helps you purchase tokens from us",
-                    "short": false
-                },
-                {
-                    "title": "redeem <number_of_tokens>",
-                    "value": "Helps you redeem tokens from your account",
-                    "short": false
-                }
-            ],
-            "image_url": "http://my-website.com/path/to/image.jpg",
-            "thumb_url": "http://example.com/path/to/thumb.png",
-            "footer": "Slack API",
-            "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-            "ts": 123456789
-        }
-      ]
+        "attachments": [ Attachments.helpTransactions ]
   });
 });
 
@@ -267,36 +162,7 @@ controller.hears(
   'direct_message',
   function (bot, message) {
     bot.reply(message, {
-        "attachments": [
-          {
-            "fallback": "Summary of commands that I understand. I'm dumb!",
-            "color": "#36a64f",
-            "pretext": "These commands can be issued once you're in a channel and chatting with the expert. Remember to invite me and tag me with @Headmaster here!",
-            "author_name": "Chat Commands",
-            "author_link": "http://flickr.com/bobby/",
-            "author_icon": "http://flickr.com/icons/bobby.jpg",
-            "title": "Slack BOT Command Spec",
-            "title_link": "https://github.com/askanexpert/slack-bot/blob/master/README.md",
-            "text": "",
-            "fields": [
-                {
-                    "title": "start_chat @Headmaster",
-                    "value": "Issued when starting a chat with expert in private channel. Starts billing period",
-                    "short": false
-                },
-                {
-                    "title": "end_chat @Headmaster",
-                    "value": "Stops billing period for chat and processes payment according to rate for expert's time",
-                    "short": false
-                }
-            ],
-            "image_url": "http://my-website.com/path/to/image.jpg",
-            "thumb_url": "http://example.com/path/to/thumb.png",
-            "footer": "Slack API",
-            "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-            "ts": 123456789
-        }
-      ]
+        "attachments": [ Attachments.helpChats ]
   });
 });
 
@@ -306,92 +172,22 @@ controller.hears(['thank'], 'direct_message', function (bot, message) {
 
 controller.hears(['help'], 'direct_message', function (bot, message) {
   bot.startConversation(message, function(err, convo) {
-        convo.say("Okay I'll help. Getting help...");
-        convo.say({ ephemeral: true,
-
-            "attachments": [
-                {
-                    "fallback": "Summary of commands that I understand. I'm dumb!",
-                    "color": "#36a64f",
-                    "pretext": "Try one of these!",
-                    "author_name": "Help Menu",
-                    "author_link": "http://flickr.com/bobby/",
-                    "author_icon": "http://flickr.com/icons/bobby.jpg",
-                    "title": "AskAnExpert Slack BOT Spec",
-                    "title_link": "https://github.com/askanexpert/slack-bot/blob/master/README.md",
-                    "text": "We have 3 types of help commands",
-                    "fields": [
-                        {
-                            "title": "Viewing",
-                            "value": "Type 'help view' for help on view commands. This will help you with stuff like viewing balance, expert lists, and expert availability.",
-                            "short": false
-                        },
-                        {
-                            "title": "Transactions",
-                            "value": "Type 'help transactions' for transaction commands to help you purchase or redeem tokens, or schedule and interact within chats.",
-                            "short": false
-                        },
-                        {
-                            "title": "Chats",
-                            "value": "Type 'help chat' for chat commands to help you with chats in a private channel with the expert. These include commands to start or end chats (billing)",
-                            "short": false
-                        }
-                    ],
-                    "image_url": "http://my-website.com/path/to/image.jpg",
-                    "thumb_url": "http://example.com/path/to/thumb.png",
-                    "footer": "Slack API",
-                    "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-                    "ts": 123456789
-                }
-            ]
-
-      });
-    })
+    convo.say("Okay I'll help. Getting help...");
+    convo.say({ ephemeral: true,
+      "attachments": [ Attachments.helpGeneral ]
+    });
+  })
 });
 
 // Defined last if none of the above matches
 controller.on('direct_message', function (bot, message) {
     bot.reply(message, {
-      "attachments": [
-          {
-              "fallback": "Summary of commands that I understand. I'm dumb!",
-              "color": "#36a64f",
-              "pretext": "Oops! Didn't really get that. May be try issuing a command?",
-              "author_name": "Help Menu",
-              "author_link": "http://flickr.com/bobby/",
-              "author_icon": "http://flickr.com/icons/bobby.jpg",
-              "title": "AskAnExpert Slack BOT Spec",
-              "title_link": "https://github.com/askanexpert/slack-bot/blob/master/README.md",
-              "text": "We have 3 types of help commands",
-              "fields": [
-                  {
-                      "title": "Viewing",
-                      "value": "Type 'help view' for help on view commands. This will help you with stuff like viewing balance, expert lists, and expert availability.",
-                      "short": false
-                  },
-                  {
-                      "title": "Transactions",
-                      "value": "Type 'help transactions' for transaction commands to help you purchase or redeem tokens, or schedule and interact within chats.",
-                      "short": false
-                  },
-                  {
-                      "title": "Chatting",
-                      "value": "For chatting session related help, type 'help chat'. These include commands to start and end chats (billing) in a private channel with the expert",
-                      "short": false
-                  }
-              ],
-              "image_url": "http://my-website.com/path/to/image.jpg",
-              "thumb_url": "http://example.com/path/to/thumb.png",
-              "footer": "Slack API",
-              "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-              "ts": 123456789
-          }
-      ]
+      "attachments": [ Attachments.helpOops ]
     });
 });
 
 controller.on('user_channel_join', function (bot, message) {
-    console.log(message.channel);
+    // console.log(message.channel);
     if(message.channel == USER_CHANNEL_ID) {
       console.log('New user joined channel');
       bot.api.users.info({user: message.user}, (error, response) => {
@@ -419,6 +215,9 @@ controller.on('user_channel_join', function (bot, message) {
 });
 
 controller.on(['mention','direct_mention'], function (bot, message) {
+  // do nothing in case mentioned in user-channel
+  if(message.channel == USER_CHANNEL_ID
+    || message.channel == EXPERT_CHANNEL_ID) { return }
   // mention and direct_mention give different results for message.text
   // Hence we use includes and not exact match
   if(message.text.includes("start_chat")) {
@@ -431,26 +230,7 @@ controller.on(['mention','direct_mention'], function (bot, message) {
     bot.startConversation(message, function(err, convo) {
       convo.say("Sorry, didn't get that. Try the following...");
       convo.say({ ephemeral: true,
-          "attachments": [
-              {
-                  "fallback": "Summary of commands that I understand. I'm dumb!",
-                  "color": "#36a64f",
-                  "pretext": `Firstly invite the expert to this channel. Then you can use the following commands.`,
-                  "fields": [
-                      {
-                          "title": "start_chat @Headmaster",
-                          "value": "This will start the billing period with the expert",
-                          "short": false
-                      },
-                      {
-                          "title": "end_chat @Headmaster",
-                          "value": "This will end the billing period with the expert",
-                          "short": false
-                      }
-                  ],
-                  "footer": "You can always directly message me for other help and purchasing or redeeming tokens"
-              }
-          ]
+          "attachments": [ Attachments.helpChats ]
       }); // end of convo say attachments
     }) // end of startConversation
   } // end of if-else block
