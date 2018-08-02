@@ -139,7 +139,7 @@ const executePurchaseTransaction = function(to, amount) {
 
 // Amount is fixed here at $1.00
 const executeWelcomeBonusTransaction = function(to) {
-  transactionService.execute({
+  return transactionService.execute({
     from_user_id:company_uuid,
     to_user_id:to,
     action_id:WELCOME_BONUS_ACTION_ID})

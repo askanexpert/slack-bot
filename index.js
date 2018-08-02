@@ -7,6 +7,8 @@ const Responses = require('./constants/responses');
 
 const USER_CHANNEL_ID = "CC29TQ086";
 const EXPERT_CHANNEL_ID = "GC10H2HL2";
+const WELCOME_BONUS_AMOUNT = 100;
+
 /**
  * A Bot for Slack!
  */
@@ -96,15 +98,44 @@ controller.on('rtm_close', function (bot) {
 // Exactly match a set of words
 controller.hears([new RegExp('^hi|hey|hello|how$','i'),], 'direct_message',
   function (bot, message) {
-    bot.startConversation(message, function(err, convo) {
-      convo.say(`Hey! How's your day going?`);
-      convo.say({ ephemeral: true,
-          "attachments": [ Attachments.welcomeBonus ]
-        }); // end of convo say attachments
-      convo.say(
-        `You can always type "help" to begin exploring the platform`);
-    });
-});
+    bot.api.users.info({user: message.user}, (error, response) => {
+        const {name, real_name, profile} = response.user;
+        User.findOne({email: profile.email}, function(err, user) {
+          if(!user) {
+            bot.startConversation(message, function(err, convo) {
+              convo.say("I see that you haven't been registered");
+              convo.say("Please join the #aae-users channel to get started!");
+            })
+          } else {
+            if(user.welcomeBonus == 0) { // In case welcome bonus not awarded
+              bot.startConversation(message, function(err, convo) {
+                convo.say(`Hey! How's your day going?`);
+                convo.say(`Depositing welcome bonus to your account... :sunglasses:`);
+                OST.executeWelcomeBonusTransaction(user.ost_id).then(() => {
+                  // making changes in local database
+                  user.welcomeBonus += WELCOME_BONUS_AMOUNT;
+                  user.token_balance += WELCOME_BONUS_AMOUNT;
+                  user.save().then(() => {
+
+                      convo.say({ ephemeral: true,
+                          "attachments": [ Attachments.welcomeBonus ]
+                        }); // end of convo say attachments
+                      convo.say(
+                        `You can always type "help" to begin exploring the platform`);
+                  }); // end of user.save()
+                }) // end of executeWelcomeBonusTransaction
+              }) // end of startConversation
+            } else { // In case welcome bonus already given
+              bot.startConversation(message, function(err, convo) {
+                convo.say(`Hey! How's your day going?`);
+                convo.say(
+                  `You can always type "help" to begin exploring the platform`);
+              });
+            } // end of nested if else block
+          } // end of outer if else block
+        })// end of user.findone
+    }) // end of bot.api.users.info
+  });
 
 // Exactly match a particular word
 controller.hears([new RegExp('^show_my_profile$','i')], 'direct_message', function (bot, message) {
@@ -204,14 +235,20 @@ controller.on('user_channel_join', function (bot, message) {
               return Promise.resolve(user);
             } else {
               console.log("Creating new user...");
-              OST.createNewUser(real_name)
-              .then((user) => {
+              OST.createNewUser(real_name).then((user) => {
                 // console.log(user);
                 var mongoUser = new User(user);
                 mongoUser.email = profile.email;
                 mongoUser.ost_id = user.id;
-                mongoUser.save();
-                return Promise.resolve(mongoUser);
+                mongoUser.save().then((user) => {
+                  bot.startConversation(message, function(err, convo) {
+                    convo.say(`Hey ${mongoUser.name} ! Welcome to the user community!`);
+                    convo.say(
+                      `Remember, for help on platform usage, you can always directly message me.`);
+                    convo.say(
+                      `DM me with "Hey" to get a welcome bonus of 100 AETOs :wink:.`);
+                  });
+                });
               })
             } // end of if else block
           }).then((mongoUser) => {

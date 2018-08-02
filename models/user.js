@@ -38,6 +38,10 @@ const UserSchema = mongoose.Schema({
   token_balance: {
     type: Number,
     default: 0
+  },
+  welcomeBonus: {
+    type: Number,
+    default: 0
   }
 });
 
