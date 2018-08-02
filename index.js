@@ -93,6 +93,23 @@ controller.hears([new RegExp('^hi|hey|hello|how$','i'),], 'direct_message',
   function (bot, message) {
     bot.startConversation(message, function(err, convo) {
       convo.say(`Hey! How's your day going?`);
+      convo.say({ ephemeral: true,
+          "attachments": [
+              {
+                  "fallback": "Welcome Bonus!",
+                  "color": "#36a64f",
+                  "pretext": "",
+                  "fields": [
+                      {
+                          "title": "Welcome bonus deposited",
+                          "value": "Congrats! I've deposited 100 AETOs into your aae account.",
+                          "short": false
+                      }
+                  ],
+                  "footer": "You can see further details on how to view balance by typing 'help'"
+              }
+          ]
+        }); // end of convo say attachments
       convo.say(
         `You can always type "help" to begin exploring the platform`);
     });
@@ -393,6 +410,8 @@ controller.on('user_channel_join', function (bot, message) {
               convo.say(`Hey ${mongoUser.name} ! Welcome to the user community!`);
               convo.say(
                 `Remember, for help on platform usage, you can always directly message me.`);
+              convo.say(
+                `DM me with "Hey" to get a welcome bonus of 100 AETOs :wink:.`);
             });
           }).catch(console.log);
       });
