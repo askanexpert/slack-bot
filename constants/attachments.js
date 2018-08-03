@@ -239,6 +239,22 @@ const getLedgerAttachment = function (id) {
     })
 }
 
+const getMyProfileAttachment = function () {
+
+}
+
+const getExpertProfileAttachment = function () {
+
+}
+
+const getExpertAvailabilityAttachment = function () {
+
+}
+
+const getExpertListAttachment = function () {
+
+}
+
 const getActionStringFromTransaction = function(transaction, id) {
   var action = "";
   if(Number(transaction.from_user_id) == id) {
@@ -278,5 +294,9 @@ module.exports = {
   helpGeneral,
   helpOops,
   getBalanceAttachment,
-  getLedgerAttachment
+  getLedgerAttachment,
+  getMyProfileAttachment,
+  getExpertProfileAttachment,
+  getExpertAvailabilityAttachment,
+  getExpertListAttachment
 }
