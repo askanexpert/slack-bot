@@ -251,7 +251,7 @@ const getMyProfileAttachment = function (user) {
     Value in USD: ~$${balUSD}`
     return {
       "fallback": "Summary of commands that I understand. I'm dumb!",
-      "color": "#36a64f",
+      "color": "#ca2041",
       "text": "",
       "fields": [
           {
