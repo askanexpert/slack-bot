@@ -160,7 +160,7 @@ controller.hears([new RegExp('^show_balance$','i')], 'direct_message', function 
       User.findOne({email: profile.email}, function(err, user) {
         if(!user) {
           bot.startConversation(message, function(err, convo) {
-            convo.say("I see that you haven't been registered");
+            convo.say("I see that you haven't been registered.");
             convo.say("Please join the #aae-users channel to get started!");
             return
           })
@@ -177,9 +177,25 @@ controller.hears([new RegExp('^show_balance$','i')], 'direct_message', function 
 })
 
 controller.hears([new RegExp('^show_history$','i')], 'direct_message', function (bot, message) {
-  bot.reply(message, {
-    "attachments": [ Attachments.getLedgerAttachment() ]
-  });
+  bot.api.users.info({user: message.user}, (error, response) => {
+      const {name, real_name, profile} = response.user;
+      User.findOne({email: profile.email}, function(err, user) {
+        if(!user) {
+          bot.startConversation(message, function(err, convo) {
+            convo.say("I see that you haven't been registered.");
+            convo.say("Please join the #aae-users channel to get started!");
+            return
+          })
+        } else {
+          bot.startConversation(message, function(err, convo) {
+            convo.say("Fetching history...");
+            Attachments.getLedgerAttachment(user.ost_id).then((res) => {
+              bot.reply(message, { "attachments": [ res ] });
+            })
+          })
+        }
+      })
+    })
 });
 
 controller.hears([new RegExp('^schedule at [0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9] @[a-z]+$','i')], 'direct_message', function (bot, message) {

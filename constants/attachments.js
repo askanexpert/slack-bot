@@ -1,4 +1,10 @@
 const ost = require('../modules/ost/ost');
+const utils = require('../modules/utils/utils');
+const {User} = require('../models/user');
+const {Expert} = require('../models/expert');
+
+const company_uuid = "acddd83e-bd60-40d7-8184-7032234caac6";
+
 // constants
 const welcomeBonus = {
     "fallback": "Welcome Bonus!",
@@ -191,52 +197,79 @@ const getBalanceAttachment = function (id) {
 }
 
 // limit indicates number of ledger activities to return
-const getLedgerAttachment = function (ledgerObject, limit) {
-  return {
-      "fallback": "Ledger",
-      "color": "warning",
-      "pretext": "Here's some details about your last 5 transactions...",
-      "title": "Payment History",
-      "title_link": "https://www.askanexpert-landing-page.herokuapp.com",
-      "fields": [
-          {
-              "title": "You paid 10 AETO to @tejnikumbh",
-              "value": "Timestamp: 22-07-1992 8:30 AM",
-              "short": false
-          },
-          {
-              "title": "You purchased 100 AETO",
-              "value": "Timestamp: 22-07-1992 8:30 AM",
-              "short": false
-          },
-          {
-              "title": "You redeemed 23 AETO",
-              "value": "Timestamp: 22-07-1992 8:30 AM",
-              "short": false
-          },
-          {
-              "title": "You paid 20 AETO to schedule a chat with @tejnikumbh",
-              "value": "Timestamp: 22-07-1992 8:30 AM",
-              "short": false
-          },
-          {
-              "title": "You got a welcome bonus of 100 AETO",
-              "value": "Timestamp: 22-07-1992 8:30 AM",
-              "short": false
-          }
-      ],
-      "actions": [
-        {
-          "type": "button",
-          "text": "Full History",
-          "url": "https://www.askanexpert-landing-page.herokuapp.com",
-          "style": "primary"
-        }
-      ],
-      "footer": "Access the full history by logging into your wallet"
-  };
+const getLedgerAttachment = function (id) {
+    return ost.getLedgerForUser(id).then((res) => {
+      const transactions = res.data.transactions;
+      var fields = [];
+      for (var i = 0; i < transactions.length; i++) {
+        var transaction = transactions[i];
+        var action = getActionStringFromTransaction(transaction, id);
+        var amount = Number(transaction.amount).toFixed(2);
+        var fromUUidString = transaction.from_user_id.substring(0,8) + "...";
+        var formattedTimeStampString = utils.getFormattedTimeStamp(transaction.timestamp);
+        var resString = `You ${action} ${amount} AETOs from ${fromUUidString}`;
+        var timeStampString = `Timestamp: ${formattedTimeStampString} Hours`;
+        fields.push({
+          "title": resString,
+          "value": timeStampString,
+          "short": false
+        });
+        // getOtherPartyString(transaction).then((otherString) => {
+        //     var string = `You ${action} ${amount} AETOs from ${otherString}`;
+        //     console.log(string);
+        // }).catch(console.log);
+      }
+      return {
+          "fallback": "Ledger",
+          "color": "#439FE0",
+          "pretext": "Here's some details about your last 3 transactions...",
+          "title": "Payment History",
+          "title_link": "https://www.askanexpert-landing-page.herokuapp.com",
+          "fields": fields,
+          "actions": [
+            {
+              "type": "button",
+              "text": "Full History",
+              "url": "https://www.askanexpert-landing-page.herokuapp.com",
+              "style": "primary"
+            }
+          ],
+          "footer": "Access the full history by logging into your wallet"
+      };
+    })
 }
 
+const getActionStringFromTransaction = function(transaction, id) {
+  var action = "";
+  if(Number(transaction.from_user_id) == id) {
+    if(Number(transaction.to_user_id) == company_uuid) {
+      action = "redeemed";
+    } else {
+      action = "sent";
+    }
+  } else {
+    if(Number(transaction.from_user_id) == company_uuid) {
+      action = "purchased";
+      if(i == transactions.length - 1) {
+        action = "received a welcome bonus of";
+      }
+    } else {
+      action = "received";
+    }
+  }
+  return action;
+}
+
+const getOtherPartyString = function(transaction) {
+  var otherPartyId = transaction.to_user_id;
+  if(Number(otherPartyId) == company_uuid) {
+    return Promise.resolve("AAE");
+  } else {
+    return User.findOne({ost_id: otherPartyId}).then((user) => {
+      return user.name;
+    })
+  }
+}
 module.exports = {
   welcomeBonus,
   helpView,

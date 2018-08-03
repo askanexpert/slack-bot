@@ -91,8 +91,10 @@ const getLedgerForUser = function (id) {
   return ledgerService.get({id})
   .then(function(res) {
     console.log(JSON.stringify(res, undefined, 2));
+    return res;
   }).catch(function(err) {
     console.log(JSON.stringify(err, undefined, 2));
+    return err;
   });
 }
 
