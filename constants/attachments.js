@@ -1,3 +1,5 @@
+const ost = require('../modules/ost/ost');
+// constants
 const welcomeBonus = {
     "fallback": "Welcome Bonus!",
     "color": "#36a64f",
@@ -156,11 +158,92 @@ const helpGeneral = {
 var helpOops = helpGeneral;
 helpOops["pretext"] = "Oops! Didn't really get that. May be try issuing a command?";
 
+// Functions
+const getBalanceAttachment = function (id) {
+  return ost.getBalanceForUser(id).then((res) => {
+    const balanceObject = res.data.balance;
+    const airdroppedBalance = Number(balanceObject.airdropped_balance).toFixed(2);
+    const tokenBalance = Number(balanceObject.token_balance).toFixed(2);
+    return {
+        "fallback": "Wallet Balance",
+        "color": "#439FE0",
+        "title": "Wallet Balance",
+        "title_link": "https://www.askanexpert-landing-page.herokuapp.com",
+        "pretext": "Here's some details about your balance...",
+        "fields": [
+            {
+                "title": `Total Balance: ${tokenBalance} AETO`,
+                "value": `Value in USD: $${tokenBalance * 0.01}`,
+                "short": false
+            }
+        ],
+        "actions": [
+          {
+            "type": "button",
+            "text": "Online Wallet",
+            "url": "https://www.askanexpert-landing-page.herokuapp.com",
+            "style": "primary"
+          }
+        ],
+        "footer": "Access more details & functionality at www.aae-wallet.herokuapp.com"
+    };
+  });
+}
+
+// limit indicates number of ledger activities to return
+const getLedgerAttachment = function (ledgerObject, limit) {
+  return {
+      "fallback": "Ledger",
+      "color": "warning",
+      "pretext": "Here's some details about your last 5 transactions...",
+      "title": "Payment History",
+      "title_link": "https://www.askanexpert-landing-page.herokuapp.com",
+      "fields": [
+          {
+              "title": "You paid 10 AETO to @tejnikumbh",
+              "value": "Timestamp: 22-07-1992 8:30 AM",
+              "short": false
+          },
+          {
+              "title": "You purchased 100 AETO",
+              "value": "Timestamp: 22-07-1992 8:30 AM",
+              "short": false
+          },
+          {
+              "title": "You redeemed 23 AETO",
+              "value": "Timestamp: 22-07-1992 8:30 AM",
+              "short": false
+          },
+          {
+              "title": "You paid 20 AETO to schedule a chat with @tejnikumbh",
+              "value": "Timestamp: 22-07-1992 8:30 AM",
+              "short": false
+          },
+          {
+              "title": "You got a welcome bonus of 100 AETO",
+              "value": "Timestamp: 22-07-1992 8:30 AM",
+              "short": false
+          }
+      ],
+      "actions": [
+        {
+          "type": "button",
+          "text": "Full History",
+          "url": "https://www.askanexpert-landing-page.herokuapp.com",
+          "style": "primary"
+        }
+      ],
+      "footer": "Access the full history by logging into your wallet"
+  };
+}
+
 module.exports = {
   welcomeBonus,
   helpView,
   helpTransactions,
   helpChats,
   helpGeneral,
-  helpOops
+  helpOops,
+  getBalanceAttachment,
+  getLedgerAttachment
 }

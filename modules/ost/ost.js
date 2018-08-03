@@ -76,17 +76,19 @@ const listAllUsers = function() {
 }
 
 // Wallet related api functions
-const showBalanceForUser = function(id) {
-  balanceService.get({id})
+const getBalanceForUser = function(id) {
+  return balanceService.get({id})
   .then(function(res) {
     console.log(JSON.stringify(res, undefined, 2));
+    return res;
   }).catch(function(err) {
     console.log(JSON.stringify(err, undefined, 2));
+    return err;
   });
 }
 
-const showLedgerForUser = function (id) {
-  ledgerService.get({id})
+const getLedgerForUser = function (id) {
+  return ledgerService.get({id})
   .then(function(res) {
     console.log(JSON.stringify(res, undefined, 2));
   }).catch(function(err) {
@@ -237,8 +239,8 @@ module.exports = {
   getUserWithId,
   editUserWithId,
   listAllUsers,
-  showBalanceForUser,
-  showLedgerForUser,
+  getBalanceForUser,
+  getLedgerForUser,
   executePayTransaction,
   executeScheduleTransaction,
   executePurchaseTransaction,
