@@ -240,7 +240,7 @@ const getLedgerAttachment = function (id) {
 }
 
 const getMyProfileAttachment = function (user) {
-    console.log(user);
+    // console.log(user);
     var email = user.email;
     var address = user.addresses[0][1];
     var balance = user.token_balance;
@@ -262,11 +262,25 @@ const getMyProfileAttachment = function (user) {
       ],
       "footer": "More details on www.askanexpert.com",
     }
-
 }
 
-const getExpertProfileAttachment = function () {
-
+const getExpertProfileAttachment = function (expert) {
+  console.log(expert);
+  var {name, email, handle, domain, fees, availabilities, linkedin}  = expert;
+  console.log(name, email, handle, domain, fees, availabilities, linkedin);
+  return {
+    "fallback": "Summary of commands that I understand. I'm dumb!",
+    "color": "#ca2041",
+    "text": "",
+    "fields": [
+        {
+            "title": `${name}`,
+            "value": `"Some Value"`,
+            "short": false
+        }
+    ],
+    "footer": "More details on www.askanexpert.com",
+  }
 }
 
 const getExpertAvailabilityAttachment = function () {

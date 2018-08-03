@@ -33,9 +33,9 @@ const ExpertSchema = mongoose.Schema({
     type: String,
     default: "Blockchain Expert"
   },
-  fees: {
-    type: String,
-    default: "2000 AETO per hour"
+  fees: { // fees are in AETOs
+    type: Number,
+    default: 2000
   },
   availabilities: [{
     type: String,

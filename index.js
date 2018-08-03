@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const {User} = require('./models/user');
 const {Expert} = require('./models/expert');
 const OST = require('./modules/ost/ost');
+const Utils = require('./modules/utils/utils');
 const Attachments = require('./constants/attachments');
 const Responses = require('./constants/responses');
 
@@ -162,6 +163,9 @@ controller.hears([new RegExp('^show_expert_list$','i')], 'direct_message', funct
 });
 
 controller.hears([new RegExp('^show_expert_profile @[a-z]+$','i')], 'direct_message', function (bot, message) {
+  Utils.createMockExpert().then((expert) => {
+    console.log(expert);
+  })
   bot.reply(message, "I'm here for expert profile!");
 });
 
