@@ -239,7 +239,29 @@ const getLedgerAttachment = function (id) {
     })
 }
 
-const getMyProfileAttachment = function () {
+const getMyProfileAttachment = function (user) {
+    console.log(user);
+    var email = user.email;
+    var address = user.addresses[0][1];
+    var balance = user.token_balance;
+    var balUSD = Number(balance * 0.01).toFixed(2);
+    var walletDetails = `Email: ${email} \n
+    Address: ${address}
+    Total Balance: ${balance} AETOs
+    Value in USD: ~$${balUSD}`
+    return {
+      "fallback": "Summary of commands that I understand. I'm dumb!",
+      "color": "#36a64f",
+      "text": "",
+      "fields": [
+          {
+              "title": `${user.name}`,
+              "value": `${walletDetails}`,
+              "short": false
+          }
+      ],
+      "footer": "More details on www.askanexpert.com",
+    }
 
 }
 

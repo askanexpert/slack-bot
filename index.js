@@ -139,7 +139,22 @@ controller.hears([new RegExp('^hi|hey|hello|how$','i'),], 'direct_message',
 
 // Exactly match a particular word
 controller.hears([new RegExp('^show_my_profile$','i')], 'direct_message', function (bot, message) {
-  bot.reply(message, "I'm here for profile!");
+  bot.api.users.info({user: message.user}, (error, response) => {
+      const {name, real_name, profile} = response.user;
+      User.findOne({email: profile.email}, function(err, user) {
+        if(!user) {
+          bot.startConversation(message, function(err, convo) {
+            convo.say("I see that you haven't been registered.");
+            convo.say("Please join the #aae-users channel to get started!");
+            return
+          })
+        } else {
+          bot.reply(message, "Fetching your profile...");
+          bot.reply(message, { "attachments":
+            [ Attachments.getMyProfileAttachment(user) ] });
+        }
+      })
+    })
 });
 
 controller.hears([new RegExp('^show_expert_list$','i')], 'direct_message', function (bot, message) {
@@ -165,11 +180,9 @@ controller.hears([new RegExp('^show_balance$','i')], 'direct_message', function 
             return
           })
         } else {
-          bot.startConversation(message, function(err, convo) {
-            convo.say("Fetching balance...");
-            Attachments.getBalanceAttachment(user.ost_id).then((res) => {
-              bot.reply(message, { "attachments": [ res ] });
-            })
+          bot.reply(message, "Fetching balance...");
+          Attachments.getBalanceAttachment(user.ost_id).then((res) => {
+            bot.reply(message, { "attachments": [ res ] });
           })
         }
       })
@@ -187,12 +200,11 @@ controller.hears([new RegExp('^show_history$','i')], 'direct_message', function 
             return
           })
         } else {
-          bot.startConversation(message, function(err, convo) {
-            convo.say("Fetching history...");
-            Attachments.getLedgerAttachment(user.ost_id).then((res) => {
-              bot.reply(message, { "attachments": [ res ] });
-            })
+          bot.reply(message, "Fetching history...");
+          Attachments.getLedgerAttachment(user.ost_id).then((res) => {
+            bot.reply(message, { "attachments": [ res ] });
           })
+
         }
       })
     })
