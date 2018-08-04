@@ -287,35 +287,40 @@ const getExpertAvailabilityAttachment = function () {
 
 }
 
-const getExpertListAttachment = function () {
-  return [
-      {
+const getExpertListAttachment = function (list) {
+  var attachments = [];
+  for(var i = 0;i < list.length; i++) {
+    var expert = list[i];
+    var description = `Rating: ${expert.rating} | 5.0, `;
+    description += `Fees: ${expert.fees} AETOs per session`;
+    description += `\n Linkedin: ${expert.linkedin} `;
+    var attachment = {
       "fallback": "Summary of commands that I understand. I'm dumb!",
-      "color": "#ca2041",
+      "color": "#ec1943",
       "text": "",
       "fields": [
           {
-              "title": `Tejas Nikumbh`,
-              "value": `"Some Value"`,
+              "title": `${expert.name}`,
+              "value":  description,
               "short": false
           }
       ],
-      "footer": "More details on www.askanexpert.com",
-    },
-    {
-    "fallback": "Summary of commands that I understand. I'm dumb!",
-    "color": "#ca2041",
-    "text": "",
-    "fields": [
+      "actions": [
         {
-            "title": `Ravi Shankar`,
-            "value": `"Some Value"`,
-            "short": false
+          "type": "button",
+          "text": "Availabilities",
+          "url": "https://www.askanexpert-landing-page.herokuapp.com"
+        },
+        {
+          "type": "button",
+          "text": "Full Profile",
+          "url": "https://www.askanexpert-landing-page.herokuapp.com"
         }
-    ],
-    "footer": "More details on www.askanexpert.com",
+      ]
     }
-  ]
+    attachments.push(attachment);
+  }
+  return attachments;
 }
 
 const getActionStringFromTransaction = function(transaction, id) {
