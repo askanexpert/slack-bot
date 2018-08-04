@@ -42,16 +42,6 @@ const helpView = {
             "short": false
         },
         {
-            "title": "show_expert_profile @username",
-            "value": "Shows the profile of expert with username",
-            "short": false
-        },
-        {
-            "title": "show_expert_availability @username",
-            "value": "Shows the availability of expert with username",
-            "short": false
-        },
-        {
             "title": "show_balance ",
             "value": "Shows the wallet balance of your account",
             "short": false

@@ -170,22 +170,6 @@ controller.hears([new RegExp('^show_expert_list for .+$','i')], 'direct_message'
   })
 });
 
-// controller.hears([new RegExp('^show_expert_profile <@.+>$','i')], 'direct_message', function (bot, message) {
-//   const command = message.text
-//   const taggedExpert = command.substring(
-//     command.length - 10, command.length - 1);
-//   bot.api.users.info({user: taggedExpert}, (error, response) => {
-//       const {real_name, email} = response.user;
-//       Expert.findOne({email}).then((expert) => {
-//         console.log(expert);
-//       })
-//   })
-// });
-//
-// controller.hears([new RegExp('^show_expert_availability @[a-z]+$','i')], 'direct_message', function (bot, message) {
-//   bot.reply(message, "I'm here for expert availability!");
-// });
-
 controller.hears([new RegExp('^show_balance$','i')], 'direct_message', function (bot, message) {
   bot.api.users.info({user: message.user}, (error, response) => {
       const {name, real_name, profile} = response.user;
