@@ -37,6 +37,10 @@ const ExpertSchema = mongoose.Schema({
     type: Number,
     default: 2000
   },
+  rating: {
+    type: Number,
+    default: 4.5
+  },
   availabilities: [{
     type: String,
     default: "Fully booked for this week"
@@ -66,7 +70,7 @@ const ExpertSchema = mongoose.Schema({
 ExpertSchema.methods.toJSON = function () {
   var expert = this;
   return _.pick(expert, [
-    'ost_id', 'name', 'email', 'handle', 'domain', 'fees', 'availabilities', 'linkedin']);
+    'ost_id', 'name', 'email', 'handle', 'domain', 'fees', 'rating', 'availabilities', 'linkedin']);
 }
 
 // Expert model creation

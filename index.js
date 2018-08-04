@@ -158,15 +158,28 @@ controller.hears([new RegExp('^show_my_profile$','i')], 'direct_message', functi
     })
 });
 
-controller.hears([new RegExp('^show_expert_list$','i')], 'direct_message', function (bot, message) {
-  bot.reply(message, "I'm here for expert list!");
+controller.hears([new RegExp('^show_expert_list for .+$','i')], 'direct_message', function (bot, message) {
+  const topic = message.text.substring(21);
+  Utils.createMockExperts().then(() => {
+    Expert.find({}, function(error, expertList) {
+      bot.reply(message, `Here's a list of *${topic}* related experts`);
+      bot.reply(message, {
+        "attachments": Attachments.getExpertListAttachment(expertList)
+      });
+    });
+  })
 });
 
-controller.hears([new RegExp('^show_expert_profile @[a-z]+$','i')], 'direct_message', function (bot, message) {
-  Utils.createMockExpert().then((expert) => {
-    console.log(expert);
+controller.hears([new RegExp('^show_expert_profile <@.+>$','i')], 'direct_message', function (bot, message) {
+  const command = message.text
+  const taggedExpert = command.substring(
+    command.length - 10, command.length - 1);
+  bot.api.users.info({user: taggedExpert}, (error, response) => {
+      const {real_name, email} = response.user;
+      Expert.findOne({email}).then((expert) => {
+        console.log(expert);
+      })
   })
-  bot.reply(message, "I'm here for expert profile!");
 });
 
 controller.hears([new RegExp('^show_expert_availability @[a-z]+$','i')], 'direct_message', function (bot, message) {
@@ -268,6 +281,7 @@ controller.hears(['help'], 'direct_message', function (bot, message) {
 
 // Defined last if none of the above matches
 controller.on('direct_message', function (bot, message) {
+    console.log(message);
     bot.reply(message, {
       "attachments": [ Attachments.helpOops ]
     });

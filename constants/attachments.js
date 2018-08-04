@@ -37,8 +37,8 @@ const helpView = {
             "short": false
         },
         {
-            "title": "show_expert_list",
-            "value": "Shows list of all experts on the platform",
+            "title": "show_expert_list for <topic name>",
+            "value": "Shows list of all experts on the platform for the topic",
             "short": false
         },
         {
@@ -288,7 +288,34 @@ const getExpertAvailabilityAttachment = function () {
 }
 
 const getExpertListAttachment = function () {
-
+  return [
+      {
+      "fallback": "Summary of commands that I understand. I'm dumb!",
+      "color": "#ca2041",
+      "text": "",
+      "fields": [
+          {
+              "title": `Tejas Nikumbh`,
+              "value": `"Some Value"`,
+              "short": false
+          }
+      ],
+      "footer": "More details on www.askanexpert.com",
+    },
+    {
+    "fallback": "Summary of commands that I understand. I'm dumb!",
+    "color": "#ca2041",
+    "text": "",
+    "fields": [
+        {
+            "title": `Ravi Shankar`,
+            "value": `"Some Value"`,
+            "short": false
+        }
+    ],
+    "footer": "More details on www.askanexpert.com",
+    }
+  ]
 }
 
 const getActionStringFromTransaction = function(transaction, id) {
