@@ -14,10 +14,25 @@ const WELCOME_BONUS_AMOUNT = 100;
  * A Bot for Slack!
  */
 
+
+
 // CLIENT_ID=xxx CLIENT_SECRET=yyy PORT=8765 npm run dev-watch
 // Connecting to mongoose for data persistence
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb://localhost:27017/AAEApp");
+
+
+// Setup Webhook
+// set up a botkit app to expose oauth and webhook endpoints
+// controller.setupWebserver(process.env.port,function(err,webserver) {
+//
+//   // set up web endpoints for oauth, receiving webhooks, etc.
+//   controller
+//     .createHomepageEndpoint(controller.webserver)
+//     .createOauthEndpoints(controller.webserver,function(err,req,res) { ... })
+//     .createWebhookEndpoints(controller.webserver);
+//
+// });
 
 /**
  * Define a function for initiating a conversation on installation
@@ -139,7 +154,8 @@ controller.hears([new RegExp('^hi|hey|hello|how$','i'),], 'direct_message',
   });
 
 // Exactly match a particular word
-controller.hears([new RegExp('^show_my_profile$','i')], 'direct_message', function (bot, message) {
+controller.hears([new RegExp('^show_my_profile$','i')], 'direct_message',
+function (bot, message) {
   bot.api.users.info({user: message.user}, (error, response) => {
       const {name, real_name, profile} = response.user;
       User.findOne({email: profile.email}, function(err, user) {
@@ -158,16 +174,27 @@ controller.hears([new RegExp('^show_my_profile$','i')], 'direct_message', functi
     })
 });
 
-controller.hears([new RegExp('^show_expert_list for .+$','i')], 'direct_message', function (bot, message) {
+controller.hears([new RegExp('^show_expert_list for .+$','i')], 'direct_message',
+ function (bot, message) {
   const topic = message.text.substring(21);
   Utils.createMockExperts().then(() => {
     Expert.find({}, function(error, expertList) {
-      bot.reply(message, `Here's a list of *${topic}* related experts`);
+      var description = `Here's a list of *${topic}* related experts \n`;
+      description += `For seeing availability, type *show_availability @<ExpertName>*`;
+      bot.reply(message, description);
       bot.reply(message, {
         "attachments": Attachments.getExpertListAttachment(expertList)
       });
     });
   })
+});
+
+controller.hears([new RegExp('^show_availability <@.+>$','i')], 'direct_message',
+ function (bot, message) {
+  const expertHandle = message.text.substring(
+    message.text.length-10, message.text.length-1);
+  console.log(expertHandle);
+  bot.reply(message, "Fetching details for expert...");
 });
 
 controller.hears([new RegExp('^show_balance$','i')], 'direct_message', function (bot, message) {
@@ -270,6 +297,7 @@ controller.on('direct_message', function (bot, message) {
       "attachments": [ Attachments.helpOops ]
     });
 });
+
 
 controller.on('user_channel_join', function (bot, message) {
     // console.log(message.channel);

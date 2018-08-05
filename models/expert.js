@@ -33,6 +33,10 @@ const ExpertSchema = mongoose.Schema({
     type: String,
     default: "Blockchain Expert"
   },
+  description: {
+    type: String,
+    default: "Blockchain Expert and Working Professional"
+  },
   fees: { // fees are in AETOs
     type: Number,
     default: 2000
@@ -45,6 +49,10 @@ const ExpertSchema = mongoose.Schema({
     type: String,
     default: "Fully booked for this week"
   }],
+  github: {
+    type: String,
+    default: null
+  },
   linkedin:{
     type: String,
     default: null
@@ -70,7 +78,8 @@ const ExpertSchema = mongoose.Schema({
 ExpertSchema.methods.toJSON = function () {
   var expert = this;
   return _.pick(expert, [
-    'ost_id', 'name', 'email', 'handle', 'domain', 'fees', 'rating', 'availabilities', 'linkedin']);
+    'ost_id', 'name', 'email', 'handle', 'domain', 'description',
+    'fees', 'rating', 'availabilities', 'github', 'linkedin']);
 }
 
 // Expert model creation

@@ -1,6 +1,7 @@
 const {Expert} = require('../../models/expert');
 
-const createMockExpert = function(name, email, handle, fees, rating, linkedin) {
+const createMockExpert = function(
+  name, email, handle, fees, rating, github, linkedin, description) {
   return new Expert({
     name,
     email,
@@ -13,7 +14,9 @@ const createMockExpert = function(name, email, handle, fees, rating, linkedin) {
     ],
     fees,
     rating,
-    linkedin
+    github,
+    linkedin,
+    description
   }).save();
 }
 
@@ -23,12 +26,16 @@ const createMockExperts = function() {
     return createMockExpert(
       "Tejas Nikumbh", "tejasnikumbh@gmail.com",
       "UBVMH1QBS", 100, 4.9,
-      "https://www.linkedin.com/in/tejas-nikumbh-19826061/")
+      "https://github.com/tejasnikumbh",
+      "https://www.linkedin.com/in/tejas-nikumbh-19826061/",
+      "Working Professional with experience @Microsoft, YCombinator")
   }).then(() => {
     return createMockExpert(
-          "Ravi Shankar", "tejnikumbh@gmail.com",
-          "UC14E3UCC", 90, 4.3,
-          "https://www.linkedin.com/in/ravi-shankar-jhuece/")
+        "Ravi Shankar", "tejnikumbh@gmail.com",
+        "UC14E3UCC", 90, 4.3,
+        "https://www.github.com/ravi-0841",
+        "https://www.linkedin.com/in/ravi-shankar-jhuece/",
+        "Phd Candidate at John Hopkins University, USA")
   }).then(() => {
     return Promise.resolve();
   });

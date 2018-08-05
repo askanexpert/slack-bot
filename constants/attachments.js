@@ -42,6 +42,11 @@ const helpView = {
             "short": false
         },
         {
+            "title": "show_availability @<Expert Name>",
+            "value": "Shows time slots that can be scheduled for expert sessions",
+            "short": false
+        },
+        {
             "title": "show_balance ",
             "value": "Shows the wallet balance of your account",
             "short": false
@@ -235,13 +240,12 @@ const getMyProfileAttachment = function (user) {
     var address = user.addresses[0][1];
     var balance = user.token_balance;
     var balUSD = Number(balance * 0.01).toFixed(2);
-    var walletDetails = `Email: ${email} \n
-    Address: ${address}
-    Total Balance: ${balance} AETOs
-    Value in USD: ~$${balUSD}`
+    var walletDetails = `*Total Balance:* $${balance} AETOs (~$${balUSD} USD) \n `;
+    walletDetails += `*Address:* ${address} \n `;
+
     return {
       "fallback": "Summary of commands that I understand. I'm dumb!",
-      "color": "#ca2041",
+      "color": "#ffbb58",
       "text": "",
       "fields": [
           {
@@ -250,27 +254,15 @@ const getMyProfileAttachment = function (user) {
               "short": false
           }
       ],
-      "footer": "More details on www.askanexpert.com",
-    }
-}
-
-const getExpertProfileAttachment = function (expert) {
-  console.log(expert);
-  var {name, email, handle, domain, fees, availabilities, linkedin}  = expert;
-  console.log(name, email, handle, domain, fees, availabilities, linkedin);
-  return {
-    "fallback": "Summary of commands that I understand. I'm dumb!",
-    "color": "#ca2041",
-    "text": "",
-    "fields": [
+      "actions": [
         {
-            "title": `${name}`,
-            "value": `"Some Value"`,
-            "short": false
+          "type": "button",
+          "text": "Full profile",
+          "url": "https://askanexpert-landing-page.herokuapp.com"
         }
-    ],
-    "footer": "More details on www.askanexpert.com",
-  }
+      ],
+      "footer": ""
+    }
 }
 
 const getExpertAvailabilityAttachment = function () {
@@ -281,9 +273,9 @@ const getExpertListAttachment = function (list) {
   var attachments = [];
   for(var i = 0;i < list.length; i++) {
     var expert = list[i];
-    var description = `Rating: ${expert.rating} | 5.0, `;
+    var description = `${expert.description} \n`;
+    description += `Rating: ${expert.rating} | 5.0, `;
     description += `Fees: ${expert.fees} AETOs per session`;
-    description += `\n Linkedin: ${expert.linkedin} `;
     var attachment = {
       "fallback": "Summary of commands that I understand. I'm dumb!",
       "color": "#ec1943",
@@ -295,16 +287,21 @@ const getExpertListAttachment = function (list) {
               "short": false
           }
       ],
+      "callback_id": "",
       "actions": [
         {
           "type": "button",
-          "text": "Availabilities",
-          "url": "https://www.askanexpert-landing-page.herokuapp.com"
+          "text": "Github",
+          "name": "github",
+          "value": "github",
+          "url": `${expert.github}`
         },
         {
           "type": "button",
-          "text": "Full Profile",
-          "url": "https://www.askanexpert-landing-page.herokuapp.com"
+          "text": "Linkedin",
+          "name": "linkedin",
+          "value": "linkedin",
+          "url": `${expert.github}`
         }
       ]
     }
@@ -354,7 +351,6 @@ module.exports = {
   getBalanceAttachment,
   getLedgerAttachment,
   getMyProfileAttachment,
-  getExpertProfileAttachment,
   getExpertAvailabilityAttachment,
   getExpertListAttachment
 }
