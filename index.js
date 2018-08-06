@@ -264,6 +264,7 @@ controller.hears([
     const timeSlot = message.text.substring(12, 28) + " Hours";
     const expertHandle = message.text.substring(
       message.text.length-10, message.text.length-1);
+    var userOSTId = "";
 
     bot.api.users.info({user: expertHandle}, (error, response) => {
       const {email} = response.user.profile;
@@ -284,6 +285,7 @@ controller.hears([
                           const {email} = response.user.profile;
                           //console.log(email);
                           User.findOne({email}).then((user) => {
+                            userOSTId = user.ost_id;
                             OST.executeScheduleTransaction(
                               user.ost_id, expert.ost_id, expert.fees * 0.1)
                               convo.stop();
@@ -298,16 +300,22 @@ controller.hears([
                         // stop the conversation. this will cause it to end with status == 'stopped'
                         convo.stop();
                     }
-          }]) // end of convo.ask
+                },
+                {
+                    default: true,
+                    callback: function(response, convo) {
+                      convo.stop();
+                    }
+                }
+          ]) // end of convo.ask
           convo.on('end', function(convo) {
             console.log(convo.status);
             if(convo.status == 'stopped') {
-              if(convo.responses["Do you wish to proceed? (type yes or no)"] == "yes") {
+              if(convo.responses[question].text == "yes") {
                 bot.reply(message, "Successfully completed the transaction!");
-              } else if (convo.responses["Do you wish to proceed? (type yes or no)"] == "no"){
-                bot.reply(message, "Transaction not executed");
+                bot.reply(message, "You can check your new balance using *show_balance*")
               } else {
-                bot.reply(message, "Transaction failed")
+                bot.reply(message, "Transaction failed. Please try again.");
               }
             }
           }) // end of convo.on('end')
@@ -319,7 +327,55 @@ controller.hears([
 // TODO: Dialog introduction as interactive component or Send show wallet button attachment
 // TODO: Check  for balance enoughness in response from ost and respond aptly
 controller.hears([new RegExp('^purchase [0-9]+$','i')], 'direct_message', function (bot, message) {
-  bot.reply(message, "I'm here for purchasing!");
+  const amount = Number(message.text.substring(9, message.text.length));
+  const question = `Confirm purchasal of ${amount} AETOs? (~$${amount * 0.01})USD`;
+  var userOSTId = "";
+  bot.startConversation(message, function(err, convo) {
+    convo.ask(question, [
+          {
+              pattern: 'yes',
+              callback: function(response, convo) {
+                  // since no further messages are queued after this,
+                  // the conversation will end naturally with status == 'completed'
+                  bot.api.users.info({user: message.user}, (error, response) => {
+                    const {email} = response.user.profile;
+                    //console.log(email);
+                    User.findOne({email}).then((user) => {
+                      userOSTId = user.ost_id;
+                      OST.executePurchaseTransaction(user.ost_id, amount * 0.01)
+                        convo.stop();
+                    })
+                })// end of bot.api.users.info
+              }// end of callback
+          },
+          {
+              pattern: 'no',
+              callback: function(response, convo) {
+                  // console.log("NO");
+                  // stop the conversation. this will cause it to end with status == 'stopped'
+                  convo.stop();
+              }
+          },
+          {
+              default: true,
+              callback: function(response, convo) {
+                convo.stop();
+              }
+          }
+    ]) // end of convo.ask
+    convo.on('end', function(convo) {
+      // console.log(convo.status);
+      if(convo.status == 'stopped') {
+        // console.log(convo.responses[question]);
+        if(convo.responses[question].text == "yes") {
+          bot.reply(message, "Successfully completed the transaction!");
+          bot.reply(message, "You can check your new balance using *show_balance*");
+        } else {
+          bot.reply(message, "Transaction failed. Please try again.")
+        }
+      }
+    }) // end of convo.on('end')
+  }) // end of bot.startConversation
 });
 
 // TODO: Dialog introduction as interactive component or Send show wallet button attachment
