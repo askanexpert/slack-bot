@@ -5,6 +5,21 @@ const {Expert} = require('../models/expert');
 
 const company_uuid = "acddd83e-bd60-40d7-8184-7032234caac6";
 
+const ACTION_ID_TO_WORDING = {
+  "39658": "Welcome Bonus",
+  "39617": "Redemption of Tokens",
+  "39618": "Purchase of Tokens",
+  "39620": "Scheduling Chat with Expert",
+  "39619": "Payment to Expert"
+}
+
+const ACTION_ID_TO_NAME = {
+  "39658": "welcomeBonus",
+  "39617": "redeem",
+  "39618": "purchase",
+  "39620": "schedule",
+  "39619": "pay"
+}
 // constants
 const welcomeBonus = {
     "fallback": "Welcome Bonus!",
@@ -197,11 +212,11 @@ const getLedgerAttachment = function (id) {
       var fields = [];
       for (var i = 0; i < transactions.length; i++) {
         var transaction = transactions[i];
-        var action = getActionStringFromTransaction(transaction, id);
+        var action = getActionStringFromTransaction(transaction);
         var amount = Number(transaction.amount).toFixed(2);
         var fromUUidString = transaction.from_user_id.substring(0,8) + "...";
         var formattedTimeStampString = utils.getFormattedTimeStamp(transaction.timestamp);
-        var resString = `You ${action} ${amount} AETOs from ${fromUUidString}`;
+        var resString = `Transfer of ${amount} AETOs for ${action} from ${fromUUidString}`;
         var timeStampString = `Timestamp: ${formattedTimeStampString} Hours`;
         fields.push({
           "title": resString,
@@ -233,11 +248,9 @@ const getLedgerAttachment = function (id) {
     })
 }
 
-const getMyProfileAttachment = function (user) {
-    // console.log(user);
-    var email = user.email;
-    var address = user.addresses[0][1];
-    var balance = user.token_balance;
+const getMyProfileAttachment = function (name, email, address, balance) {
+    // console.log(name, email, address, balance);
+    balance = Number(balance).toFixed(2);
     var balUSD = Number(balance * 0.01).toFixed(2);
     var walletDetails = `*Total Balance:* $${balance} AETOs (~$${balUSD} USD) \n `;
     walletDetails += `*Address:* ${address} \n `;
@@ -248,7 +261,7 @@ const getMyProfileAttachment = function (user) {
       "text": "",
       "fields": [
           {
-              "title": `${user.name}`,
+              "title": `${name} (${email})`,
               "value": `${walletDetails}`,
               "short": false
           }
@@ -367,25 +380,9 @@ const getSchedulingAttachment = function(name, fees, slot) {
   return attachment;
 }
 
-const getActionStringFromTransaction = function(transaction, id) {
-  var action = "";
-  if(Number(transaction.from_user_id) == id) {
-    if(Number(transaction.to_user_id) == company_uuid) {
-      action = "redeemed";
-    } else {
-      action = "sent";
-    }
-  } else {
-    if(Number(transaction.from_user_id) == company_uuid) {
-      action = "purchased";
-      if(i == transactions.length - 1) {
-        action = "received a welcome bonus of";
-      }
-    } else {
-      action = "received";
-    }
-  }
-  return action;
+const getActionStringFromTransaction = function(transaction) {
+  var actionId = transaction.action_id;
+  return ACTION_ID_TO_WORDING[actionId];
 }
 
 const getOtherPartyString = function(transaction) {

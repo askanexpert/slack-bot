@@ -1,8 +1,9 @@
 const {Expert} = require('../../models/expert');
 
 const createMockExpert = function(
-  name, email, handle, fees, rating, github, linkedin, description) {
+  ost_id, name, email, handle, fees, rating, github, linkedin, description) {
   return new Expert({
+    ost_id,
     name,
     email,
     handle,
@@ -24,6 +25,7 @@ const createMockExperts = function() {
   return Expert.remove({})
   .then(() => {
     return createMockExpert(
+      "a1fcf1b4-b84f-4fe2-9a80-38fbfa7e0dbf",
       "Tejas Nikumbh", "tejnikumbh.official@gmail.com",
       "UBVMH1QBS", 100, 4.9,
       "https://github.com/tejasnikumbh",
@@ -31,6 +33,7 @@ const createMockExperts = function() {
       "Working Professional with experience @Microsoft, YCombinator")
   }).then(() => {
     return createMockExpert(
+        "5b3931ad-0a47-48e6-8d77-bcc7f57ba531",
         "Ravi Shankar", "tejnikumbh@gmail.com",
         "UC14E3UCC", 90, 4.3,
         "https://www.github.com/ravi-0841",

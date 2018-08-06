@@ -15,7 +15,7 @@ const OST_ACTIONS_PURCHASE_TOKENS = "purchase";
 const PURCHASE_ACTION_ID = "39618";
 
 const OST_ACTIONS_REDEEM_TOKENS = "redeem";
-const REDEEM__ACTION_ID = "39617";
+const REDEEM_ACTION_ID = "39617";
 
 const OST_ACTIONS_WELCOME_BONUS = "welcomeBonus";
 const WELCOME_BONUS_ACTION_ID = "39658";
@@ -24,8 +24,8 @@ const WELCOME_BONUS_ACTION_ID = "39658";
 const company_uuid = "acddd83e-bd60-40d7-8184-7032234caac6";
 
 const apiEndpoint = 'https://sandboxapi.ost.com/v1.1';
-const api_key = process.env.OST_API_KEY; // replace with the API Key you obtained earlier
-const api_secret = process.env.OST_API_SECRET; // replace with the API Secret you obtained earlier
+const api_key = "963276c609ac4bb5613e"; // replace with the API Key you obtained earlier
+const api_secret = "3833df546c014a742520c3039032ee80a8c45887bb6bf5377206e231cc2ab886"; // replace with the API Secret you obtained earlier
 const ostObj = new OSTSDK({apiKey: api_key, apiSecret: api_secret, apiEndpoint: apiEndpoint});
 
 // OST services constants
@@ -48,16 +48,18 @@ const createNewUser = function (name) {
 }
 
 const getUserWithId = function (id) {
-  userService.get({id})
+  return userService.get({id})
   .then(function(res) {
     console.log(JSON.stringify(res, undefined, 2));
+    return res.data.user;
   }).catch(function(err) {
     console.log(JSON.stringify(err, undefined, 2));
+    return err;
   });
 }
 
 const editUserWithId = function(id, newName) {
-  userService.edit({id, name: newName})
+  return userService.edit({id, name: newName})
   .then(function(res) {
     console.log(JSON.stringify(res, undefined, 2));
   }).catch(function(err) {
@@ -67,7 +69,7 @@ const editUserWithId = function(id, newName) {
 
 // TODO:- Introduce Page Number Functionality
 const listAllUsers = function() {
-  userService.list({})
+  return userService.list({})
   .then(function(res) {
     console.log(JSON.stringify(res, undefined, 2));
   }).catch(function(err) {
@@ -102,7 +104,7 @@ const getLedgerForUser = function (id) {
 // NOTE:- Amounts specified are in USD!!!
 // User-to-User transactions
 const executePayTransaction = function (from, to, amount) {
-  transactionService.execute({
+  return transactionService.execute({
     from_user_id:from,
     to_user_id:to,
     action_id:PAY_ACTION_ID,
@@ -115,7 +117,9 @@ const executePayTransaction = function (from, to, amount) {
 }
 
 const executeScheduleTransaction = function(from, to, amount) {
-  transactionService.execute({
+  console.log(from, to, amount);
+  amount = amount * 0.01; // since we pass in the amount in AETO
+  return transactionService.execute({
     from_user_id:from,
     to_user_id:to,
     action_id:SCHEDULE_ACTION_ID,
@@ -129,7 +133,7 @@ const executeScheduleTransaction = function(from, to, amount) {
 
 // Company-to-User transactions
 const executePurchaseTransaction = function(to, amount) {
-  transactionService.execute({
+  return transactionService.execute({
     from_user_id:company_uuid,
     to_user_id:to,
     action_id:PURCHASE_ACTION_ID,
@@ -156,7 +160,7 @@ const executeWelcomeBonusTransaction = function(to) {
 
 // User-to-Company transactions
 const executeRedeemTransaction = function(from, amount) {
-  transactionService.execute({
+  return transactionService.execute({
     from_user_id:from,
     to_user_id:company_uuid,
     action_id:REDEEM__ACTION_ID,
@@ -170,7 +174,7 @@ const executeRedeemTransaction = function(from, amount) {
 
 // TODO:- Introduce Page Number Functionality
 const listAllTransactions = function () {
-  transactionService.list({page_no: 1, limit: 10
+  return transactionService.list({page_no: 1, limit: 10
   }).then(function(res) {
     console.log(JSON.stringify(res, undefined, 2));
   }).catch(function(err) {
@@ -180,16 +184,18 @@ const listAllTransactions = function () {
 
 // Actions related api functions
 const getAction = function(id) {
-  actionService.get({id}).then(function(res) {
+  return actionService.get({id}).then(function(res) {
     console.log(JSON.stringify(res, undefined, 2));
+    return res.data.action;
   }).catch(function(err) {
     console.log(JSON.stringify(err, undefined, 2));
+    return err;
   });
 }
 
 // TODO:- Introduce Page Number Functionality
 const listAllActions = function () {
-  actionService.list({}).then(function(res) {
+  return actionService.list({}).then(function(res) {
     console.log(JSON.stringify(res, undefined, 2));
   }).catch(function(err) {
     console.log(JSON.stringify(err, undefined, 2));
@@ -198,7 +204,7 @@ const listAllActions = function () {
 
 // Airdrop related api functions
 const airdropTokensToUser = function (userId, amount) {
-  airdropService.execute({amount, user_ids: userId})
+  return airdropService.execute({amount, user_ids: userId})
   .then(function(res) {
     console.log(JSON.stringify(res, undefined, 2));
   }).catch(function(err) {
@@ -208,7 +214,7 @@ const airdropTokensToUser = function (userId, amount) {
 
 // userIds is an array here
 const airdropTokensToUsers = function (userIds, amount) {
-  airdropService.execute({amount, user_ids: userIds.join(",")})
+  return airdropService.execute({amount, user_ids: userIds.join(",")})
   .then(function(res) {
     console.log(JSON.stringify(res, undefined, 2));
   }).catch(function(err) {
@@ -217,7 +223,7 @@ const airdropTokensToUsers = function (userIds, amount) {
 }
 
 const getAirdropStatus = function (id) {
-  airdropService.get({id})
+  return airdropService.get({id})
   .then(function(res) {
     console.log(JSON.stringify(res, undefined, 2));
   }).catch(function(err) {
@@ -227,7 +233,7 @@ const getAirdropStatus = function (id) {
 
 // TODO:- Introduce Page Number Functionality
 const listAllAirdrops = function() {
-  airdropService.list({
+  return airdropService.list({
     page_no: 1, limit: 50, current_status: 'processing,complete'
   }).then(function(res) {
     console.log(JSON.stringify(res, undefined, 2));
