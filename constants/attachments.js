@@ -331,6 +331,42 @@ const getExpertListAttachment = function (list) {
   return attachments;
 }
 
+const getSchedulingAttachment = function(name, fees, slot) {
+  var description = `This will schedule a session with ${name} at ${slot}. \n`;
+  description += `A scheduling fee of *${fees}AETOs* will be deducted. \n`;
+  description += `Do you wish to proceed?`
+  var attachment = {
+    "fallback": "Summary of commands that I understand. I'm dumb!",
+    "color": "#f0443f",
+    "pretext":  "Please confirm the transaction",
+    "fields": [
+        {
+            "title": `Confirmation of transaction`,
+            "value":  description,
+            "short": false
+        }
+    ],
+    "callback_id": "schedule",
+    "actions": [
+      {
+        "type": "button",
+        "text": "Yes",
+        "name": "yes",
+        "value": "yes",
+        "style": "default"
+      },
+      {
+        "type": "button",
+        "text": "No",
+        "name": "no",
+        "value": "no",
+        "style": "default"
+      }
+    ]
+  }
+  return attachment;
+}
+
 const getActionStringFromTransaction = function(transaction, id) {
   var action = "";
   if(Number(transaction.from_user_id) == id) {
@@ -373,5 +409,6 @@ module.exports = {
   getLedgerAttachment,
   getMyProfileAttachment,
   getExpertAvailabilityAttachment,
-  getExpertListAttachment
+  getExpertListAttachment,
+  getSchedulingAttachment
 }

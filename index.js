@@ -254,18 +254,41 @@ controller.hears([
   new RegExp(
   '^schedule at (0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4} (2[0-3]|[01][0-9]):[0-5][0-9] with <@.+>$','i')],
   'direct_message', function (bot, message) {
-  // var dialog = bot.createDialog(
-  //        'Title of dialog',
-  //        'callback_id',
-  //        'Submit'
-  //      ).addText('Text','text','some text')
-  //       .addSelect('Select','select',null,[{label:'Foo',value:'foo'},{label:'Bar',value:'bar'}],{placeholder: 'Select One'})
-  //       .addTextarea('Textarea','textarea','some longer text',{placeholder: 'Put words here'})
-  //       .addUrl('Website','url','http://botkit.ai');
-  //
-//bot.replyWithDialog(message, dialog.asObject());
-  bot.reply(message, "I'm here for scheduling!");
-});
+    const timeSlot = message.text.substring(12, 28) + " Hours";
+    const expertHandle = message.text.substring(
+      message.text.length-10, message.text.length-1);
+    bot.api.users.info({user: expertHandle}, (error, response) => {
+      const {email} = response.user.profile;
+      //console.log(email);
+      Expert.findOne({email}).then((expert) => {
+        bot.startConversation(message, function(err, convo) {
+          var description = `This will schedule a session with *${expert.name}* \n`
+          description += `The session will be at *${timeSlot}* Hours \n`;
+          description += `A scheduling fee of *${expert.fees}AETOs* will be deducted \n`;
+          var question = `Do you wish to proceed? (type yes or no)`
+          convo.say(description);
+          convo.ask(question, [
+                {
+                    pattern: 'yes',
+                    callback: function(response, convo) {
+                        console.log("YES");
+                        // since no further messages are queued after this,
+                        // the conversation will end naturally with status == 'completed'
+                        convo.stop();
+                    }
+                },
+                {
+                    pattern: 'no',
+                    callback: function(response, convo) {
+                      console.log("NO");
+                        // stop the conversation. this will cause it to end with status == 'stopped'
+                        convo.stop();
+                    }
+          }]) // end of convo.ask
+        }) // end of bot.startConversation
+      }) // end of expert.findOne
+    }) // end of bot.api.users.info
+}); // end of controller hearing
 
 controller.hears([new RegExp('^purchase [0-9]+$','i')], 'direct_message', function (bot, message) {
   bot.reply(message, "I'm here for purchasing!");
@@ -322,7 +345,6 @@ controller.on('direct_message', function (bot, message) {
       "attachments": [ Attachments.helpOops ]
     });
 });
-
 
 controller.on('user_channel_join', function (bot, message) {
     // console.log(message.channel);
