@@ -189,7 +189,9 @@ controller.hears([new RegExp('^show_expert_list for .+$','i')], 'direct_message'
   })
 });
 
-controller.hears([new RegExp('^show_availability for <@.+>$','i')], 'direct_message',
+controller.hears([
+  new RegExp('^show_availability for <@.+>$','i'),
+  new RegExp('^show_availability <@.+>$','i')], 'direct_message',
  function (bot, message) {
   const expertHandle = message.text.substring(
     message.text.length-10, message.text.length-1);

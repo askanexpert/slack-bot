@@ -56,7 +56,9 @@ const helpView = {
             "value": "Shows your chat session payment history",
             "short": false
         }
-      ]
+      ],
+      "footer": "Full spec at https://github.com/askanexpert/slack-bot/blob/master/README.md",
+      "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png"
     }
 
 const helpTransactions = {
@@ -77,20 +79,19 @@ const helpTransactions = {
       },
       {
           "title": "purchase <number_of_tokens>",
-          "value": "Helps you purchase tokens from us",
-          "short": false
+          "value": "Purchase tokens in $USD",
+          "short": true
       },
       {
           "title": "redeem <number_of_tokens>",
-          "value": "Helps you redeem tokens from your account",
-          "short": false
+          "value": "Redeem tokens for $USD",
+          "short": true
       }
   ],
   "image_url": "http://my-website.com/path/to/image.jpg",
   "thumb_url": "http://example.com/path/to/thumb.png",
-  "footer": "Slack API",
-  "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-  "ts": 123456789
+  "footer": "Full spec at https://github.com/askanexpert/slack-bot/blob/master/README.md",
+  "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png"
 };
 
 const helpChats = {
@@ -117,14 +118,13 @@ const helpChats = {
   ],
   "image_url": "http://my-website.com/path/to/image.jpg",
   "thumb_url": "http://example.com/path/to/thumb.png",
-  "footer": "Slack API",
-  "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-  "ts": 123456789
+  "footer": "Full spec at https://github.com/askanexpert/slack-bot/blob/master/README.md",
+  "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png"
 }
 
 const helpGeneral = {
     "fallback": "Summary of commands that I understand. I'm dumb!",
-    "color": "#6fb57e",
+    "color": "#40aa73",
     "pretext": "Try one of these!",
     "author_name": "Help Menu",
     "author_link": "http://flickr.com/bobby/",
@@ -151,12 +151,11 @@ const helpGeneral = {
     ],
     "image_url": "http://my-website.com/path/to/image.jpg",
     "thumb_url": "http://example.com/path/to/thumb.png",
-    "footer": "Slack API",
-    "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-    "ts": 123456789
+    "footer": "Full spec at https://github.com/askanexpert/slack-bot/blob/master/README.md",
+    "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png"
 }
 
-var helpOops = helpGeneral;
+var helpOops = JSON.parse(JSON.stringify(helpGeneral));
 helpOops["pretext"] = "Oops! Didn't really get that. May be try issuing a command?";
 
 // Functions
@@ -298,7 +297,7 @@ const getExpertListAttachment = function (list) {
     description += `Fees: ${expert.fees} AETOs per session`;
     var attachment = {
       "fallback": "Summary of commands that I understand. I'm dumb!",
-      "color": "#f04e6f",
+      "color": "#f0443f",
       "text": "",
       "fields": [
           {
