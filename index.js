@@ -248,7 +248,22 @@ controller.hears([new RegExp('^show_history$','i')], 'direct_message', function 
     })
 });
 
-controller.hears([new RegExp('^schedule at [0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9] @[a-z]+$','i')], 'direct_message', function (bot, message) {
+controller.hears([
+  new RegExp(
+  '^schedule at (0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4} (2[0-3]|[01][0-9]):[0-5][0-9] Hours with <@.+>$','i'),
+  new RegExp(
+  '^schedule at (0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4} (2[0-3]|[01][0-9]):[0-5][0-9] with <@.+>$','i')],
+  'direct_message', function (bot, message) {
+  // var dialog = bot.createDialog(
+  //        'Title of dialog',
+  //        'callback_id',
+  //        'Submit'
+  //      ).addText('Text','text','some text')
+  //       .addSelect('Select','select',null,[{label:'Foo',value:'foo'},{label:'Bar',value:'bar'}],{placeholder: 'Select One'})
+  //       .addTextarea('Textarea','textarea','some longer text',{placeholder: 'Put words here'})
+  //       .addUrl('Website','url','http://botkit.ai');
+  //
+//bot.replyWithDialog(message, dialog.asObject());
   bot.reply(message, "I'm here for scheduling!");
 });
 
