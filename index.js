@@ -189,12 +189,20 @@ controller.hears([new RegExp('^show_expert_list for .+$','i')], 'direct_message'
   })
 });
 
-controller.hears([new RegExp('^show_availability <@.+>$','i')], 'direct_message',
+controller.hears([new RegExp('^show_availability for <@.+>$','i')], 'direct_message',
  function (bot, message) {
   const expertHandle = message.text.substring(
     message.text.length-10, message.text.length-1);
-  console.log(expertHandle);
-  bot.reply(message, "Fetching details for expert...");
+  bot.api.users.info({user: expertHandle}, (error, response) => {
+    const {email} = response.user.profile;
+    //console.log(email);
+    Expert.findOne({email}).then((expert) => {
+      bot.reply(message, "Fetching details for expert...");
+      bot.reply(message, {
+        "attachments": [ Attachments.getExpertAvailabilityAttachment(expert) ]
+      })
+    })
+  })
 });
 
 controller.hears([new RegExp('^show_balance$','i')], 'direct_message', function (bot, message) {

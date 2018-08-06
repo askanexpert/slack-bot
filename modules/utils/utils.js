@@ -10,7 +10,7 @@ const createMockExpert = function(
     availabilities: [
       "(22-07-2018 08:30 Hours) - Half Hour Session",
       "(22-07-2018 10:30 Hours) - Half Hour Session",
-      "(25-07-2018 08:30 Hours) -  Half Hour Session"
+      "(25-07-2018 08:30 Hours) - Half Hour Session"
     ],
     fees,
     rating,
@@ -24,7 +24,7 @@ const createMockExperts = function() {
   return Expert.remove({})
   .then(() => {
     return createMockExpert(
-      "Tejas Nikumbh", "tejasnikumbh@gmail.com",
+      "Tejas Nikumbh", "tejnikumbh.official@gmail.com",
       "UBVMH1QBS", 100, 4.9,
       "https://github.com/tejasnikumbh",
       "https://www.linkedin.com/in/tejas-nikumbh-19826061/",

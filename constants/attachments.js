@@ -8,7 +8,7 @@ const company_uuid = "acddd83e-bd60-40d7-8184-7032234caac6";
 // constants
 const welcomeBonus = {
     "fallback": "Welcome Bonus!",
-    "color": "#36a64f",
+    "color": "#96baf8",
     "pretext": "",
     "fields": [
         {
@@ -22,7 +22,7 @@ const welcomeBonus = {
 
 const helpView = {
     "fallback": "Summary of commands that I understand. I'm dumb!",
-    "color": "#36a64f",
+    "color": "#6fb57e",
     "pretext": "Here's a list of view commands that I support",
     "author_name": "View Commands",
     "author_link": "http://flickr.com/bobby/",
@@ -42,7 +42,7 @@ const helpView = {
             "short": false
         },
         {
-            "title": "show_availability @<Expert Name>",
+            "title": "show_availability for @<Expert Name>",
             "value": "Shows time slots that can be scheduled for expert sessions",
             "short": false
         },
@@ -61,7 +61,7 @@ const helpView = {
 
 const helpTransactions = {
   "fallback": "Summary of commands that I understand. I'm dumb!",
-  "color": "#36a64f",
+  "color": "#6fb57e",
   "pretext": "Here's a list of transaction commands that I support",
   "author_name": "Transaction Commands",
   "author_link": "http://flickr.com/bobby/",
@@ -95,7 +95,7 @@ const helpTransactions = {
 
 const helpChats = {
   "fallback": "Summary of commands that I understand. I'm dumb!",
-  "color": "#36a64f",
+  "color": "#6fb57e",
   "pretext": "These commands can be issued once you're in a channel and chatting with the expert. Remember to invite me and tag me with @Headmaster here!",
   "author_name": "Chat Commands",
   "author_link": "http://flickr.com/bobby/",
@@ -124,7 +124,7 @@ const helpChats = {
 
 const helpGeneral = {
     "fallback": "Summary of commands that I understand. I'm dumb!",
-    "color": "#36a64f",
+    "color": "#6fb57e",
     "pretext": "Try one of these!",
     "author_name": "Help Menu",
     "author_link": "http://flickr.com/bobby/",
@@ -257,6 +257,7 @@ const getMyProfileAttachment = function (user) {
       "actions": [
         {
           "type": "button",
+          "style": "primary",
           "text": "Full profile",
           "url": "https://askanexpert-landing-page.herokuapp.com"
         }
@@ -265,8 +266,27 @@ const getMyProfileAttachment = function (user) {
     }
 }
 
-const getExpertAvailabilityAttachment = function () {
-
+const getExpertAvailabilityAttachment = function (expert) {
+  console.log(expert);
+  var responseTitle = `Time Slots available for ${expert.name}`;
+  var responseDescription = ``;
+  for(var i = 0; i < expert.availabilities.length; i++) {
+    responseDescription += `*Slot ${i}:* ${expert.availabilities[i]} \n`;
+  }
+  var attachment = {
+    "fallback": "Availability of expert!",
+    "color": "#f04e6f",
+    "text": "",
+    "fields": [
+        {
+            "title": `${responseTitle}`,
+            "value":  `${responseDescription}`,
+            "short": false
+        }
+    ],
+    "footer": "Type schedule at <Time Slot> @Username to schedule a session"
+  }
+  return attachment;
 }
 
 const getExpertListAttachment = function (list) {
@@ -278,7 +298,7 @@ const getExpertListAttachment = function (list) {
     description += `Fees: ${expert.fees} AETOs per session`;
     var attachment = {
       "fallback": "Summary of commands that I understand. I'm dumb!",
-      "color": "#ec1943",
+      "color": "#f04e6f",
       "text": "",
       "fields": [
           {
@@ -294,6 +314,7 @@ const getExpertListAttachment = function (list) {
           "text": "Github",
           "name": "github",
           "value": "github",
+          "style": "default",
           "url": `${expert.github}`
         },
         {
@@ -301,6 +322,7 @@ const getExpertListAttachment = function (list) {
           "text": "Linkedin",
           "name": "linkedin",
           "value": "linkedin",
+          "style": "default",
           "url": `${expert.github}`
         }
       ]
