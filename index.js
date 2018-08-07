@@ -296,7 +296,7 @@ controller.hears([
                     }// end of callback
                 },
                 {
-                    pattern: 'no',
+                    pattern:'no',
                     callback: function(response, convo) {
                       console.log("NO");
                         // stop the conversation. this will cause it to end with status == 'stopped'
@@ -330,108 +330,114 @@ controller.hears([
 // TODO: Check  for balance enoughness in response from ost and respond aptly
 controller.hears([new RegExp('^purchase [0-9]+$','i')], 'direct_message', function (bot, message) {
   const amount = Number(message.text.substring(9, message.text.length));
-  const question = `Confirm purchasal of ${amount} AETOs?`;
-  var userOSTId = "";
-  bot.startConversation(message, function(err, convo) {
-    convo.ask(question, [
-          {
-              pattern: 'yes',
-              callback: function(response, convo) {
-                  // since no further messages are queued after this,
-                  // the conversation will end naturally with status == 'completed'
-                  bot.api.users.info({user: message.user}, (error, response) => {
-                    const {email} = response.user.profile;
-                    //console.log(email);
-                    User.findOne({email}).then((user) => {
-                      userOSTId = user.ost_id;
-                      OST.executePurchaseTransaction(user.ost_id, amount)
-                        convo.stop();
-                    })
-                })// end of bot.api.users.info
-              }// end of callback
-          },
-          {
-              pattern: 'no',
-              callback: function(response, convo) {
-                  // console.log("NO");
-                  // stop the conversation. this will cause it to end with status == 'stopped'
+  var question = `Confirm purchasal of ${amount} AETOs? \n`;
+  OST.getTokenPriceInUSD().then((price) => {
+    question += `You will be charged *$${price*amount} USD*`;
+    var userOSTId = "";
+    bot.startConversation(message, function(err, convo) {
+      convo.ask(question, [
+            {
+                pattern: 'yes',
+                callback: function(response, convo) {
+                    // since no further messages are queued after this,
+                    // the conversation will end naturally with status == 'completed'
+                    bot.api.users.info({user: message.user}, (error, response) => {
+                      const {email} = response.user.profile;
+                      //console.log(email);
+                      User.findOne({email}).then((user) => {
+                        userOSTId = user.ost_id;
+                        OST.executePurchaseTransaction(user.ost_id, amount)
+                          convo.stop();
+                      })
+                  })// end of bot.api.users.info
+                }// end of callback
+            },
+            {
+                pattern: 'no',
+                callback: function(response, convo) {
+                    // console.log("NO");
+                    // stop the conversation. this will cause it to end with status == 'stopped'
+                    convo.stop();
+                }
+            },
+            {
+                default: true,
+                callback: function(response, convo) {
                   convo.stop();
-              }
-          },
-          {
-              default: true,
-              callback: function(response, convo) {
-                convo.stop();
-              }
+                }
+            }
+      ]) // end of convo.ask
+      convo.on('end', function(convo) {
+        // console.log(convo.status);
+        if(convo.status == 'stopped') {
+          // console.log(convo.responses[question]);
+          if(convo.responses[question].text == "yes") {
+            bot.reply(message, "Successfully completed the transaction!");
+            bot.reply(message, "You can check your new balance using *show_balance*");
+          } else {
+            bot.reply(message, "Transaction failed. Please try again.")
           }
-    ]) // end of convo.ask
-    convo.on('end', function(convo) {
-      // console.log(convo.status);
-      if(convo.status == 'stopped') {
-        // console.log(convo.responses[question]);
-        if(convo.responses[question].text == "yes") {
-          bot.reply(message, "Successfully completed the transaction!");
-          bot.reply(message, "You can check your new balance using *show_balance*");
-        } else {
-          bot.reply(message, "Transaction failed. Please try again.")
         }
-      }
-    }) // end of convo.on('end')
-  }) // end of bot.startConversation
+      }) // end of convo.on('end')
+    }) // end of bot.startConversation
+  }) // end of getTokenPriceInUSD
 });
 
 // TODO: Dialog introduction as interactive component or Send show wallet button attachment
 // TODO: Check  for balance enoughness in response from ost and respond aptly
 controller.hears([new RegExp('^redeem [0-9]+$','i')], 'direct_message', function (bot, message) {
   const amount = Number(message.text.substring(7, message.text.length));
-  const question = `Confirm redemtion of ${amount} AETOs?`;
-  var userOSTId = "";
-  bot.startConversation(message, function(err, convo) {
-    convo.ask(question, [
-          {
-              pattern: 'yes',
-              callback: function(response, convo) {
-                  // since no further messages are queued after this,
-                  // the conversation will end naturally with status == 'completed'
-                  bot.api.users.info({user: message.user}, (error, response) => {
-                    const {email} = response.user.profile;
-                    //console.log(email);
-                    User.findOne({email}).then((user) => {
-                      userOSTId = user.ost_id;
-                      OST.executeRedeemTransaction(user.ost_id, amount)
-                        convo.stop();
-                    })
-                })// end of bot.api.users.info
-              }// end of callback
-          },
-          {
-              pattern: 'no',
-              callback: function(response, convo) {
-                  // console.log("NO");
-                  // stop the conversation. this will cause it to end with status == 'stopped'
+  var question = `Confirm redemtion of ${amount} AETOs? \n`;
+  OST.getTokenPriceInUSD().then((price) => {
+    question += `This will redeem *$${amount * price} USD* into your account.`
+    var userOSTId = "";
+    bot.startConversation(message, function(err, convo) {
+      convo.ask(question, [
+            {
+                pattern: 'yes',
+                callback: function(response, convo) {
+                    // since no further messages are queued after this,
+                    // the conversation will end naturally with status == 'completed'
+                    bot.api.users.info({user: message.user}, (error, response) => {
+                      const {email} = response.user.profile;
+                      //console.log(email);
+                      User.findOne({email}).then((user) => {
+                        userOSTId = user.ost_id;
+                        OST.executeRedeemTransaction(user.ost_id, amount)
+                          convo.stop();
+                      })
+                  })// end of bot.api.users.info
+                }// end of callback
+            },
+            {
+                pattern: 'no',
+                callback: function(response, convo) {
+                    // console.log("NO");
+                    // stop the conversation. this will cause it to end with status == 'stopped'
+                    convo.stop();
+                }
+            },
+            {
+                default: true,
+                callback: function(response, convo) {
                   convo.stop();
-              }
-          },
-          {
-              default: true,
-              callback: function(response, convo) {
-                convo.stop();
-              }
+                }
+            }
+      ]) // end of convo.ask
+      convo.on('end', function(convo) {
+        // console.log(convo.status);
+        if(convo.status == 'stopped') {
+          // console.log(convo.responses[question]);
+          if(convo.responses[question].text == "yes") {
+            bot.reply(message, "Successfully completed the transaction!");
+            bot.reply(message, "You can check your new balance using *show_balance*");
+          } else {
+            bot.reply(message, "Transaction failed. Please try again.")
           }
-    ]) // end of convo.ask
-    convo.on('end', function(convo) {
-      // console.log(convo.status);
-      if(convo.status == 'stopped') {
-        // console.log(convo.responses[question]);
-        if(convo.responses[question].text == "yes") {
-          bot.reply(message, "Successfully completed the transaction!");
-          bot.reply(message, "You can check your new balance using *show_balance*");
-        } else {
-          bot.reply(message, "Transaction failed. Please try again.")
         }
-      }
-    }) // end of convo.on('end')
-  }) // end of bot.startConversation
+      }) // end of convo.on('end')
+    }) // end of bot.startConversation
+  });
 });
 
 controller.hears(

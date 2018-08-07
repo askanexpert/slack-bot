@@ -35,6 +35,18 @@ const transactionService = ostObj.services.transactions;
 const actionService = ostObj.services.actions;
 const balanceService = ostObj.services.balances;
 const ledgerService = ostObj.services.ledger;
+const tokenService = ostObj.services.token;
+
+// Token related api functions
+const getTokenPriceInUSD = function() {
+  return tokenService.get({}).then(function(res) {
+    console.log(JSON.stringify(res, undefined, 2));
+    return Promise.resolve(Number(res.data.price_points.OST.USD) * 0.01);
+  }).catch(function(err) {
+    console.log(JSON.stringify(err, undefined, 2));
+    return Promise.resolve(Number(-1));
+  });
+}
 
 // User related api functions
 const createNewUser = function (name) {
@@ -132,6 +144,7 @@ const executeScheduleTransaction = function(from, to, amount) {
 
 // Company-to-User transactions
 const executePurchaseTransaction = function(to, amount) {
+  console.log(to, amount);
   return transactionService.execute({
     from_user_id:company_uuid,
     to_user_id:to,
@@ -242,6 +255,7 @@ const listAllAirdrops = function() {
 }
 
 module.exports = {
+  getTokenPriceInUSD,
   createNewUser,
   getUserWithId,
   editUserWithId,

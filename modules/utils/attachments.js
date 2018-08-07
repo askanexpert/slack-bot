@@ -37,7 +37,7 @@ const welcomeBonus = {
 
 const helpView = {
     "fallback": "Summary of commands that I understand. I'm dumb!",
-    "color": "#6fb57e",
+    "color": "#ffbb58",
     "pretext": "Here's a list of view commands that I support",
     "author_name": "View Commands",
     "author_link": "http://flickr.com/bobby/",
@@ -78,7 +78,7 @@ const helpView = {
 
 const helpTransactions = {
   "fallback": "Summary of commands that I understand. I'm dumb!",
-  "color": "#6fb57e",
+  "color": "#ffbb58",
   "pretext": "Here's a list of transaction commands that I support",
   "author_name": "Transaction Commands",
   "author_link": "http://flickr.com/bobby/",
@@ -111,7 +111,7 @@ const helpTransactions = {
 
 const helpChats = {
   "fallback": "Summary of commands that I understand. I'm dumb!",
-  "color": "#6fb57e",
+  "color": "#ffbb58",
   "pretext": "These commands can be issued once you're in a channel and chatting with the expert. Remember to invite me and tag me with @Headmaster here!",
   "author_name": "Chat Commands",
   "author_link": "http://flickr.com/bobby/",
@@ -139,7 +139,7 @@ const helpChats = {
 
 const helpGeneral = {
     "fallback": "Summary of commands that I understand. I'm dumb!",
-    "color": "#40aa73",
+    "color": "#ffbb58",
     "pretext": "Try one of these!",
     "author_name": "Help Menu",
     "author_link": "http://flickr.com/bobby/",
@@ -176,33 +176,38 @@ helpOops["pretext"] = "Oops! Didn't really get that. May be try issuing a comman
 // Functions
 const getBalanceAttachment = function (id) {
   return ost.getBalanceForUser(id).then((res) => {
-    const balanceObject = res.data.balance;
-    const airdroppedBalance = Number(balanceObject.airdropped_balance).toFixed(2);
-    const tokenBalance = Number(balanceObject.token_balance).toFixed(2);
-    return {
-        "fallback": "Wallet Balance",
-        "color": "#439FE0",
-        "title": "Wallet Balance",
-        "title_link": "https://www.askanexpert-landing-page.herokuapp.com",
-        "pretext": "Here's some details about your balance...",
-        "fields": [
+    // console.log(res);
+    return ost.getTokenPriceInUSD().then((price) => {
+      console.log(price);
+      const balanceObject = res.data.balance;
+      const airdroppedBalance = Number(balanceObject.airdropped_balance).toFixed(2);
+      const tokenBalance = Number(balanceObject.token_balance).toFixed(2);
+      const usdValue = Number(tokenBalance * price).toFixed(3);
+      return {
+          "fallback": "Wallet Balance",
+          "color": "#439FE0",
+          "title": "Wallet Balance",
+          "title_link": "https://www.askanexpert-landing-page.herokuapp.com",
+          "pretext": "Here's some details about your balance...",
+          "fields": [
+              {
+                  "title": `Total Balance: ${tokenBalance} AETO`,
+                  "value": `Value in USD: $${usdValue}`,
+                  "short": false
+              }
+          ],
+          "actions": [
             {
-                "title": `Total Balance: ${tokenBalance} AETO`,
-                "value": `Value in USD: $${tokenBalance * 0.01}`,
-                "short": false
+              "type": "button",
+              "text": "Online Wallet",
+              "url": "https://www.askanexpert-landing-page.herokuapp.com",
+              "style": "primary"
             }
-        ],
-        "actions": [
-          {
-            "type": "button",
-            "text": "Online Wallet",
-            "url": "https://www.askanexpert-landing-page.herokuapp.com",
-            "style": "primary"
-          }
-        ],
-        "footer": "Access more details & functionality at www.aae-wallet.herokuapp.com"
-    };
-  });
+          ],
+          "footer": "Access more details & functionality at www.aae-wallet.herokuapp.com"
+      }; // end of attachment
+    }); // end of ost.getTokenPriceInUSD
+  });// end of get ost.getBalanceForUser
 }
 
 // limit indicates number of ledger activities to return
@@ -253,7 +258,7 @@ const getMyProfileAttachment = function (name, email, address, balance) {
 
     return {
       "fallback": "Summary of commands that I understand. I'm dumb!",
-      "color": "#ffbb58",
+      "color": "#9c6ef9",
       "text": "",
       "fields": [
           {
@@ -283,7 +288,7 @@ const getExpertAvailabilityAttachment = function (expert) {
   }
   var attachment = {
     "fallback": "Availability of expert!",
-    "color": "#f04e6f",
+    "color": "#55d5af",
     "text": "",
     "fields": [
         {
