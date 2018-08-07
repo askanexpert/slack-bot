@@ -116,6 +116,7 @@ const getLedgerForUser = function (id) {
 // NOTE:- Amounts specified are in USD!!!
 // User-to-User transactions
 const executePayTransaction = function (from, to, amount) {
+  console.log("Executing Pay Transaction...");
   return transactionService.execute({
     from_user_id:from,
     to_user_id:to,

@@ -121,12 +121,12 @@ const helpChats = {
   "text": "",
   "fields": [
       {
-          "title": "@Headmaster start_chat",
+          "title": "@Headmaster start_chat with @<Expert>",
           "value": "Issued when starting a chat with expert in private channel. Starts billing period",
           "short": false
       },
       {
-          "title": "@Headmaster end_chat",
+          "title": "@Headmaster end_chat with @<Expert>",
           "value": "Stops billing period for chat and processes payment according to rate for expert's time",
           "short": false
       },
