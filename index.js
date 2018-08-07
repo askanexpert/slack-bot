@@ -532,6 +532,11 @@ controller.on('user_channel_join', function (bot, message) {
     } // end of user-channel check
 }); // end of controller
 
+controller.on('bot_channel_join', function (bot, message) {
+  bot.reply(message, 'Thanks for inviting me to the channel!');
+  bot.reply(message, `DM me for any help, or simply type @Headmaster help if you're chatting with an expert already!`);
+})
+
 controller.on(['mention','direct_mention'], function (bot, message) {
   // do nothing in case mentioned in user-channel
   if(message.channel == USER_CHANNEL_ID
@@ -539,11 +544,107 @@ controller.on(['mention','direct_mention'], function (bot, message) {
   // mention and direct_mention give different results for message.text
   // Hence we use includes and not exact match
   if(message.text.includes("start_chat")) {
-    bot.reply(message, "I'm here for starting chat!");
+    // bot.reply(message, "I'm here for starting chat!");
+    var fees = 20;
+    var text = "This will start the chat session and billing period.";
+    text += ` You will be billed ${fees} AETOs for the session as fixed price.`;
+    text += " Following this, you will be billed on per minute basis \n";
+    var description = `A fee of ${fees} AETOs will be deducted`;
+    var userResponse = "";
+    bot.startConversation(message, function(err, convo) {
+      convo.ask({
+        "attachments": [Attachments.getConfirmationAttachment(text, description)]
+      }, [
+  				{
+  					pattern: "yes",
+  					callback: function(reply, convo) {
+  						userResponse = "yes";
+  						convo.stop();
+  						// Start chat session and execute the bill payment
+  					}
+  				},
+  				{
+  					pattern: "no",
+  					callback: function(reply, convo) {
+  						userResponse = "no";
+  						convo.stop();
+  					}
+  				},
+  				{
+  					default: true,
+  					callback: function(reply, convo) {
+  						convo.stop();
+  					} // end of callback for default pattern
+  				} // end of default pattern
+  			] // end of patterns array
+      )// end of convo.ask
+      convo.on('end', function(convo) {
+        // console.log(convo.status);
+        if(convo.status == 'stopped') {
+          // console.log(convo.responses[question]);
+          if(userResponse == "yes") {
+            bot.reply(message, "Great! Enjoy your session");
+          } else {
+            bot.reply(message, "Did not start billing period");
+          }
+        }
+      }) // end of convo.on('end')
+    }) // end of conversation
+
+
   } else if(message.text.includes("end_chat")) {
-    bot.reply(message, "I'm here for ending chat!");
+    // bot.reply(message, "I'm here for ending chat!");
+    var text = "This will end the chat session and billing period";
+    var description = "You will be billed per minute on any extra time availed";
+    var userResponse = "";
+    bot.startConversation(message, function(err, convo) {
+      convo.ask({
+        "attachments": [Attachments.getConfirmationAttachment(text, description)]
+      }, [
+  				{
+  					pattern: "yes",
+  					callback: function(reply, convo) {
+  						userResponse = "yes";
+              // TODO:- End chat session and execute the bill payment
+              // if time exceeds already scheduled (implement function later)
+  						convo.stop();
+  						// do something awesome here.
+  					}
+  				},
+  				{
+  					pattern: "no",
+  					callback: function(reply, convo) {
+  						userResponse = "no";
+  						convo.stop();
+  					}
+  				},
+  				{
+  					default: true,
+  					callback: function(reply, convo) {
+  						convo.stop();
+  					} // end of callback for default pattern
+  				} // end of default pattern
+  			] // end of patterns array
+      )// end of convo.ask
+      convo.on('end', function(convo) {
+        // console.log(convo.status);
+        if(convo.status == 'stopped') {
+          // console.log(convo.responses[question]);
+          if(userResponse == "yes") {
+            bot.reply(message, "Hope you had a great session!");
+          } else {
+            bot.reply(message, "Failed to end billing period");
+          }
+        }
+      }) // end of convo.on('end')
+    }) // end of conversation
+
   } else if(message.text.toLowerCase().includes("thank")) {
     bot.reply(message, "Not a problem. Always at your service!")
+  } else if(message.text.toLowerCase().includes("help")) {
+    bot.reply(message, {
+      "attachments": [ Attachments.helpChats ]
+    })
   } else {
     bot.startConversation(message, function(err, convo) {
       convo.say("Sorry, didn't get that. Try the following...");

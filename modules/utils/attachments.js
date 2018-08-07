@@ -121,13 +121,18 @@ const helpChats = {
   "text": "",
   "fields": [
       {
-          "title": "start_chat @Headmaster",
+          "title": "@Headmaster start_chat",
           "value": "Issued when starting a chat with expert in private channel. Starts billing period",
           "short": false
       },
       {
-          "title": "end_chat @Headmaster",
+          "title": "@Headmaster end_chat",
           "value": "Stops billing period for chat and processes payment according to rate for expert's time",
+          "short": false
+      },
+      {
+          "title": "@Headmaster help",
+          "value": "Access the help menu for chats",
           "short": false
       }
   ],
@@ -381,6 +386,20 @@ const getSchedulingAttachment = function(name, fees, slot) {
   return attachment;
 }
 
+const getConfirmationAttachment = function(pretext, description) {
+  return {
+    "fallback": "Summary of commands that I understand. I'm dumb!",
+    "color": "#f0443f",
+    "pretext":  pretext,
+    "fields": [
+        {
+            "title": `Do you wish to proceed? (yes/no)`,
+            "value": description,
+            "short": false
+        }
+    ]
+  }
+}
 const getActionStringFromTransaction = function(transaction) {
   var actionId = transaction.action_id;
   return ACTION_ID_TO_WORDING[actionId];
@@ -408,5 +427,6 @@ module.exports = {
   getMyProfileAttachment,
   getExpertAvailabilityAttachment,
   getExpertListAttachment,
-  getSchedulingAttachment
+  getSchedulingAttachment,
+  getConfirmationAttachment
 }
