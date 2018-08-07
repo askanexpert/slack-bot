@@ -3,8 +3,7 @@ const {User} = require('./models/user');
 const {Expert} = require('./models/expert');
 const OST = require('./modules/ost/ost');
 const Utils = require('./modules/utils/utils');
-const Attachments = require('./constants/attachments');
-const Responses = require('./constants/responses');
+const Attachments = require('./modules/utils/attachments');
 
 const USER_CHANNEL_ID = "CC29TQ086";
 const EXPERT_CHANNEL_ID = "GC10H2HL2";

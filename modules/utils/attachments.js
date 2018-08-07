@@ -1,7 +1,7 @@
-const ost = require('../modules/ost/ost');
-const utils = require('../modules/utils/utils');
-const {User} = require('../models/user');
-const {Expert} = require('../models/expert');
+const ost = require('../ost/ost');
+const utils = require('../utils/utils');
+const {User} = require('../../models/user');
+const {Expert} = require('../../models/expert');
 
 const company_uuid = "acddd83e-bd60-40d7-8184-7032234caac6";
 
@@ -223,10 +223,6 @@ const getLedgerAttachment = function (id) {
           "value": timeStampString,
           "short": false
         });
-        // getOtherPartyString(transaction).then((otherString) => {
-        //     var string = `You ${action} ${amount} AETOs from ${otherString}`;
-        //     console.log(string);
-        // }).catch(console.log);
       }
       return {
           "fallback": "Ledger",
