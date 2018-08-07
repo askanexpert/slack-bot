@@ -118,7 +118,6 @@ const executePayTransaction = function (from, to, amount) {
 
 const executeScheduleTransaction = function(from, to, amount) {
   console.log(from, to, amount);
-  amount = amount * 0.01; // since we pass in the amount in AETO
   return transactionService.execute({
     from_user_id:from,
     to_user_id:to,
@@ -163,7 +162,7 @@ const executeRedeemTransaction = function(from, amount) {
   return transactionService.execute({
     from_user_id:from,
     to_user_id:company_uuid,
-    action_id:REDEEM__ACTION_ID,
+    action_id:REDEEM_ACTION_ID,
     amount})
     .then(function(res) {
       console.log(JSON.stringify(res, undefined, 2));
