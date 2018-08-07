@@ -34,5 +34,8 @@
     "mongodb": "^1.4.39",
     "mongoose": "^5.2.6",
     "validator": "^10.4.0"
+  },
+  "devDependencies": {
+    "sleep": "^5.2.3"
   }
 }
